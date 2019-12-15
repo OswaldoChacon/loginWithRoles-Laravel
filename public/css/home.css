@@ -1,0 +1,385 @@
+/*
+    DEMO STYLE
+*/
+
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+}
+
+/* universal classes */
+
+.none {
+    display: none;
+}
+
+.input-invalid {
+    border: 1px solid #e44e44;
+    box-shadow: 0px 1px 5px 0px #e44e;
+    transition: ease all 0.3s;
+}
+
+/* end universal classes */
+
+/* Loader */
+
+.loaderContainer, .messageContainer {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: rgba(255, 255, 255, .7);
+    visibility: hidden;
+    opacity: 0;
+    transition: ease all .3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.loaderContainer.active, .messageContainer.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.loaderContainer .loader {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border-left: 3px solid #0D47A1;
+    border-top: 3px solid #0D47A1;
+    border-bottom: 0px solid transparent;
+    border-right: 0px solid transparent;
+}
+
+.loaderContainer.active .loader {
+    animation: gira 1s infinite linear;
+}
+
+@keyframes gira {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* End loader */
+
+/* Alert Message */
+
+.messageContainer {
+    background-color: transparent;
+}
+
+.messageContainer .message {
+    width: 300px;
+    height: 250px;
+    background-color: #fff;
+    box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.3);
+}
+
+.messageContainer .message .icon {
+    text-align: center;
+    font-size: 3em;
+    color: #0D47A1;
+}
+
+.messageContainer .message .title {
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #555;
+}
+
+.messageContainer .message .description {
+    text-align: center;
+    font-size: 1em;
+    font-weight: bold;
+    color: #999;
+}
+
+/* End alert message */
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}
+
+a, a:hover, a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.navbar {
+    padding: 15px 10px;
+    background: #0D47A1 !important;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed #ddd;
+    margin: 40px 0;
+}
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    /* sidebar static */
+    /* align-items: stretch; */
+}
+
+#sidebar {
+    /*  */
+    /* position: fixed; */
+    /*  */
+    /* min-width: 250px;
+    max-width: 250px;
+    background: #fff;
+    color: #000;
+    transition: all 0.3s; */
+
+    /* sidebar static */
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
+    background: #fff;
+    color: #000;
+    transition: all 0.3s;
+
+    overflow-y: auto;
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+/* new to sidebar static */
+#sidebar.active + #content{
+    /* width: 100%;         */
+    padding-left:20px;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: #0D47A1;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    /* border-bottom: 1px solid #47748b; */
+    margin-top: 20px;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    margin-top: 5px;
+    /* font-size: 1.1em; */
+    font-size: 13px;
+    display: block;
+}
+
+#sidebar ul li a:hover {
+    color: #7386D5;
+    background: #E6E6E6;
+}
+
+#sidebar ul li.active>a, a[aria-expanded="true"] {
+    color: #000;
+    background: #fff;
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+/* ul ul a { */
+
+ul ul {
+    font-size: 0.9em !important;
+    padding-left: 40px !important;
+    background: #E6E6E6;
+}
+
+ul.CTAs {
+    padding: 20px;
+}
+
+ul.CTAs a {
+    text-align: center;
+    font-size: 0.9em !important;
+    display: block;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+a.download {
+    background: #fff;
+    color: #7386D5;
+}
+
+a.article, a.article:hover {
+    background: #6d7fcc !important;
+    color: #fff !important;
+}
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+    width: 100%;
+    padding: 20px;
+    padding-left: 270px;
+    min-height: 100vh;
+    transition: all 0.3s;
+    position: relative;
+
+
+    /*  */
+    /* position: relative;
+    padding-left: 260px; */
+    /* padding-right: 2px; */
+    /*  */
+    /*
+    margin-left: 200px;
+    height: 500px;
+    width: auto;
+    position: relative;
+    background: #f00;
+    overflow: auto;
+    z-index: 1; */
+}
+
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    /* content full width sidebar static */
+    #content{
+        /* width: 100%;         */
+        padding-left:20px;
+    }
+    #sidebarCollapse span {
+        display: none;
+    }
+}
+
+.card {
+    /* margin-right:10px; */
+    /* margin-left:10px; */
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.content-layout {
+    /* min-height: 51.5rem; */
+    padding-top: 65px;
+}
+
+/* ADDED CLASSES BY JENNIFER 1/OCTOBER/2019 */
+
+.table-docentes tr td:last-child a {
+    width: 100%;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.table-docentes tr td .dropdown-toggle::after {
+    right: -10%;
+}
+
+.table-docentes tr td {
+    vertical-align: middle;
+}
+
+.table-docentes p {
+    color: #333;
+}
+
+.table-docentes input {
+    margin-bottom: 15px;
+    background-color: transparent;
+    width: 100%;
+    border: 1px solid #777;
+    border-radius: 5px;
+    padding: 2% 4%;
+}
+
+/* END ADDED CLASSES BY JENNIFER */
+
+/* Hidding arrow from input type="numer" */
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0;
+    /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+    /* Firefox */
+}
+
+/* Cambios 29/10/2019 */
+.inputContainer{
+    margin-bottom: 14px;
+}
+.inputContainer > * {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0px 7px;
+}
+.inputContainer input{
+    width: 15px;
+    height: 15px;
+    margin-bottom: 0;
+}

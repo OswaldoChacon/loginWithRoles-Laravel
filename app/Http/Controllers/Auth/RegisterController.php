@@ -3,10 +3,18 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Registro;
+use Illuminate\Support\Str;
 use App\User;
+use App\Roles;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
+use App\Mail\Confirmacion;
 
 class RegisterController extends Controller
 {
@@ -28,7 +36,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -61,12 +69,55 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\User
      */
-    protected function create(array $data)
+    // protected function create(array $data)
+    // {
+    //     return User::create([
+    //         'nombre' => $data['nombre'],
+    //         'email' => $data['email'],
+    //         'password' => Hash::make($data['password']),
+    //     ]);
+    // }
+
+    protected function create(Registro $request)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        // dd($request);        
+        $cod_confirmacion = Str::random(25);
+        $datos_formulario = [
+            'nombre' => $request->nombre,
+            'email' => $request->email,
+            'cod_confirmacion' => $cod_confirmacion
+        ];
+        $rol = Roles::where('nombre','admin')->get();        
+        $nuevoUsuario = new User();
+        $nuevoUsuario->nombre = $request->nombre;
+        $nuevoUsuario->email = $request->email;
+        $nuevoUsuario->password = bcrypt($request->password);
+        $nuevoUsuario->cod_confirmacion = $cod_confirmacion;
+        $nuevoUsuario->save();        
+        $nuevoUsuario->roles()->attach($rol);        
+        // Mail::to($request->email)->send(new Confirmacion($datos_formulario));
+        Session::flash('message', '¡Registrado!');
+        Session::flash('alert-success', 'alert-success');
+        return back();
+        // ->with('success','Registro exitoso');
+        // return User::create([
+        //     'nombre' => $data['nombre'],
+        //     'email' => $data['email'],
+        //     'password' => Hash::make($data['password']),
+        // ]);
+    }
+    public function verificacion($code)
+    {
+        $user = User::where('cod_confirmacion', $code)->first();
+
+        if (!$user)
+            return redirect('/register');
+
+        $user->confirmado = true;
+        $user->cod_confirmacion = null;
+        $user->save();
+        Session::flash('message', '¡Correo confirmado!');
+        Session::flash('alert-success', 'alert-success');
+        return redirect('/home');
     }
 }
