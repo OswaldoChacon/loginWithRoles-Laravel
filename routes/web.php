@@ -11,6 +11,12 @@
 |
 */
 
+Route::group(['middleware' => 'admin'], function () {
+    Route::get('/oficina', function () {
+        return view('home.oficina');
+    });
+});
+
 Route::get('/', function () {
     return view('home');
 })->middleware('auth');
@@ -30,9 +36,14 @@ Route::get('/registrar', function () {
     return view('login.registrar');
 })->name('register');
 
+
+Route::get('/alumno', function () {
+    return view('home.alumno');
+});
+
 Route::post('/login', 'Auth\LoginController@login')->name('login');
-Route::post('/registrar', 'Auth\RegisterController@create')->name('registrar');    
-    
+Route::post('/registrar', 'Auth\RegisterController@create')->name('registrar');
+
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 

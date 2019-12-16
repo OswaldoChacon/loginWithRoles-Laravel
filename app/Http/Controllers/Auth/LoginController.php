@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
 use Illuminate\Http\Request;
@@ -45,9 +46,25 @@ class LoginController extends Controller
         $credentials = $this->validate($request, [
             $this->username() => 'required|string|exists:users',
             'password' => 'required|string',
+            'role' => 'required'
         ]);
-        // if (Auth::attempt($credentials)) {            
-        if (Auth::guard()->attempt($this->getCredentials($request))) {                                    
+        // dd($request['role']);
+        // if (Auth::attempt($credentials)) {                    
+        $user = User::where('email',$request->input('email'))->first();
+        if(!$user->hasRole($request->input('role'))){
+            return back()
+            ->withErrors([$this->username() => 'No cuentas con el permiso para ingresar como admin.'])
+            ->withInput(request([$this->username()]));                    
+        }
+        if (Auth::guard()->attempt($this->getCredentials($request))) {                                                
+            switch($request->input('role')){
+                case "admin":
+                    return redirect('/oficina');
+                break;
+                case "estudiantes":
+                    return redirect('/alumno');
+                break;
+            }
             return redirect('/');
             // if ($this->sendFailedLoginResponse($request)) {            
         } else {
@@ -65,6 +82,11 @@ class LoginController extends Controller
             'password' => $request->input('password'),
             'confirmado' => true
         ];
+    }
+    protected function authenticated(Request $request, $user)
+    {
+
+        //return $this->authenticated($request, $this->guard()->user())
     }
   
     public function logout()

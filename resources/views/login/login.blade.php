@@ -19,6 +19,10 @@
             </div>
             <form method="POST" action="{{route('login')}}">
                 @csrf
+                <select name="role" id="role">
+                    <option value="admin">Admin</option>
+                    <option value="estudiantes">Estudiante</option>
+                </select>
                 <div class="input-group input-group-sm mb-2 ">
                     <div class="input-group-prepend">
                         <span class="input-group-text">@</span>
