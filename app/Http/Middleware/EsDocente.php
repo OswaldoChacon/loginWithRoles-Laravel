@@ -15,6 +15,8 @@ class EsDocente
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+        if(auth()->check() && auth()->user()->hasRole('Docente'))
+            return $next($request);
+        return redirect('/login');        
     }
 }

@@ -1,0 +1,23 @@
+.alert-danger{
+    background: #f44336 !important;
+    color:#fff;
+}
+.close:hover{
+    color: #fff !important;
+}
+.alert-success{
+    background: #4CAF50 !important;
+    color: #fff;
+}
+.alert-info{
+    background: #41a1ea !important;
+    color: white;
+}
+
+.btn-group .btn {
+    margin: 0px 2px !important;
+}
+.notPadding{
+    padding-top: 5px !important;
+    padding-bottom: 0 !important;
+}

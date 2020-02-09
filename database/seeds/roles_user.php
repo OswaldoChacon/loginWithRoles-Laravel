@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+
 class roles_user extends Seeder
 {
     /**
@@ -13,8 +14,30 @@ class roles_user extends Seeder
     {
         //
         DB::table('roles_user')->insert([
-            'role_id'=>1,
-            'user_id'=>1
+            [
+                'roles_id' => 1,
+                'user_id' => 1
+            ],
+            [
+                'roles_id' => 2,
+                'user_id' => 1
+            ],
+            [
+                'roles_id' => 3,
+                'user_id' => 1
+            ],
+            [
+                'roles_id' => 2,
+                'user_id' => 2
+            ],
+            [
+                'roles_id' => 3,
+                'user_id' => 3
+            ],
+            [
+                'roles_id' => 3,
+                'user_id' => 4
+            ]
         ]);
     }
 }

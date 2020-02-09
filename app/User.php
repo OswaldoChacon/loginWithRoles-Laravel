@@ -6,7 +6,6 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Http\Request;
-
 class User extends Authenticatable
 {
     use Notifiable;
@@ -17,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nombre', 'email', 'password', 'cod_confirmacion', 'confirmado'
+        'nombre', 'email', 'password', 'cod_confirmacion'
     ];
 
     /**
@@ -40,7 +39,40 @@ class User extends Authenticatable
 
     public function roles()
     {
-        return $this->belongsToMany(Roles::class);
+        return $this->belongsToMany('App\Roles');
+    }
+    public function foros()
+    {
+        return $this->hasMany('App\Foros');
+    }
+    public function foros_user()
+    {
+        return $this->belongsToMany('App\Foros');
+    }
+    public function proyectos()
+    {
+        return $this->belongsToMany('App\Proyectos');
+    }
+    public function notificaciones_emisor()
+    {
+        return $this->hasMany('App\Notificaciones', 'emisor');
+    }   
+    public function notificaciones_receptor()
+    {
+        return $this->hasMany('App\Notificaciones', 'receptor');
+    }
+    public function jurado_proyecto()
+    {
+        return $this->belongsToMany('App\Proyectos','jurados','docente_id','proyecto_id');
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+    public function getFullName()
+    {
+        return "{$this->prefijo} {$this->nombre} {$this->apellidoP} {$this->apellidoM}";
     }
     public function authorizeRoles($roles)
     {
@@ -62,14 +94,13 @@ class User extends Authenticatable
                 return true;
             }
         }
-        return false;        
+        return false;
     }
     public function hasRole($role)
     {
-        if ($this->roles()->where('nombre', $role)->first()) {            
+        if ($this->roles()->where('nombre', $role)->first()) {
             return true;
         }
         return false;
     }
-    // public function active($user)
 }

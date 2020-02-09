@@ -18,12 +18,13 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nombre');
+            $table->string('nombre')->nullable();
             $table->string('apellidoP')->nullable();
             $table->string('apellidoM')->nullable();
+            $table->string('prefijo')->nullable();
             $table->string('email')->unique();
-            $table->string('password');
-            $table->string('num_control')->unique()->nullable();
+            $table->string('password')->nullable();
+            $table->string('num_control')->unique();
             $table->string('cod_confirmacion')->nullable();
             $table->timestamp('email_verificado_at')->nullable();
             $table->boolean('confirmado')->default(false);

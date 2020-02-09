@@ -15,6 +15,8 @@ class EsAlumno
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+        if(auth()->check() && auth()->user()->hasRole('Alumno'))
+            return $next($request);
+        return redirect('/login');
     }
 }

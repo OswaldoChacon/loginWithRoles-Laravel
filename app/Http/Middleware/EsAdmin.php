@@ -15,8 +15,8 @@ class EsAdmin
      */
     public function handle($request, Closure $next)
     {
-        if(auth()->check() && auth()->user()->hasRole('admin'))            
+        if(auth()->check() && auth()->user()->hasRole('Oficina'))            
             return $next($request);
-        return redirect('/alumno');
+        return redirect('/login');
     }
 }

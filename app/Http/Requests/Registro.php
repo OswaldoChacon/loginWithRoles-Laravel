@@ -25,9 +25,9 @@ class Registro extends FormRequest
     public function rules()
     {
         return [
-            'nombre'=>'required',            
-            'email'=> 'required|unique:users',
-            'password'=>'required'
+            'num_control'=>'required|numeric|unique:users',            
+            'email'=> 'required|email|unique:users',          
+            'rol'=> 'required'
         ];
     }
 }
