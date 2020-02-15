@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{URL::asset('/img/favicon-32x32.png')}}">
     <title>Departamento de proyectos de investigación</title>
 
@@ -20,6 +21,7 @@
     <link rel="stylesheet" href="{{asset('css/alerts.css')}}">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    @stack('styles')
 
 </head>
 
@@ -60,7 +62,7 @@
 
 					</button> -->
                     <button class="btn  d-print-inline-block d-lg-none ml-auto dropdown" type="button" data-toggle="dropdown" style="background: transparent !important; border:none;">
-                        <span style="color:#fff">{!!Auth::user()->getFullName()!!}</span>&nbsp;&nbsp; <i class='fas fa-user' style='font-size:24px; color:#fff'></i>
+                        <span class="username">{!!Auth::user()->getFullName()!!}</span>&nbsp;&nbsp; <i class='fas fa-user' style='font-size:24px; color:#fff'></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" method="POST" >
@@ -92,7 +94,7 @@
                             </li>
                             <li class="nav-item d-none d-lg-block">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" style="background: transparent !important; border:none;">
-                                    <span style="color:#fff">{!!Auth::user()->getFullName()!!}</span>&nbsp;&nbsp;<i class='fas fa-user' style='font-size:24px; color:#fff'></i>
+                                    <span class="username">{!!Auth::user()->getFullName()!!}</span>&nbsp;&nbsp;<i class='fas fa-user' style='font-size:24px; color:#fff'></i>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                     <a class="dropdown-item" method="POTS" href="{{url('logout')}}">

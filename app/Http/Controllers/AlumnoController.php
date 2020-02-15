@@ -43,9 +43,9 @@ class AlumnoController extends Controller
         return view('alumno.proyecto.registrarproyecto', compact('foro', 'lineas', 'docentes', 'alumnos'));
     }
     public function registrarProyecto(ProyectoRequest $request, $id)
-    {
+    {        
         $id = Crypt::decrypt($id);
-        $foro = Foros::find($id)->first();
+        $foro = Foros::find($id)->where('acceso',true)->first();        
         $folio = $this->folio($foro);
         $proyecto = new Proyectos();
         $emisores = array();

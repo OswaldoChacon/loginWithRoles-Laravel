@@ -15,9 +15,9 @@ class Horariobreak extends Migration
     {
         Schema::create('horariobreak', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('hora')->unique();
+            $table->string('hora');
             $table->integer('posicion')->unique();    
-            $table->integer('disponible');
+            //$table->integer('disponible');
             $table->unsignedInteger('fechas_foros_id');
             //$table->foreign('fechas_foros_id')->references('id')->on('fechas_foros')->onDelete('cascade');
             $table->foreign('fechas_foros_id')->references('id')->on('fechas_foros')->onDelete('cascade');

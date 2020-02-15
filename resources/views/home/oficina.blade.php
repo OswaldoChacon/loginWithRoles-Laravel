@@ -36,13 +36,10 @@
         <a href="#menuhorarios" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Horarios</a>
         <ul class="collapse list-unstyled" id="menuhorarios">
             <li>
-                <a href="">Proyectos registrados</a>
-            </li>
-            <li>
                 <a href="{{route('horariojuradoView')}}">Asignar horario del jurado</a>
             </li>
             <li>
-                <a href="">Generar horario</a>
+            <a href="{{route('horarioView')}}">Generar horario</a>
             </li>
         </ul>
     </li>    

@@ -23,7 +23,7 @@
         @endphp
         @if($notificaciones->count() >0)
         <div class="table-responsive">
-            <table class="table table-striped table-hover">
+            <table class="table table-sm table-hover">
                 <thead>
                     <th>Registró</th>
                     <th>Proyecto</th>

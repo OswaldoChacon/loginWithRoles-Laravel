@@ -38,10 +38,11 @@
         <h5 class="card-header">Lineas de Investigacion: <span style="font-weight: bold">{{$lineasdeinvestigacion->count()}}</span></h5>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-striped table-hover">
+                <table class="table table-hover table-sm">
                     <thead>
                         <th>Clave</th>
                         <th>Nombre</th>
+                        <th>Acciones</th>
                     </thead>
                     <tbody>
                         @foreach ($lineasdeinvestigacion as $linea)

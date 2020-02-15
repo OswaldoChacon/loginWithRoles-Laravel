@@ -65,6 +65,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Proyectos','jurados','docente_id','proyecto_id');
     }
+    public function horarios()
+    {
+        return $this->hasMany('App\HorarioJurado','docente_id');
+    }
 
     public function getId()
     {

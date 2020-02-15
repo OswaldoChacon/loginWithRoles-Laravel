@@ -19,6 +19,9 @@
     No has agregado a ningún maestro para este foro
 </div>
 @endif
+@if($foro->fechas()->count() == 0)
+    <div class="alert alert-danger">No se han estipulado fechas para este foro</div>
+@endif
 <div class="card">
     <div class="card-header">
         <h5>Configuración</h5>
@@ -31,8 +34,8 @@
                 {{csrf_field()}}
                 {{method_field('PUT')}}
                 <!-- <input type="hidden" value="{{Crypt::encrypt($foro->id)}}" name="id"> -->
-                <table class="table table-striped table-hover">
-                    <thead>
+                <table class="table table-strsiped table-hover table-sm">
+                    <thead class="thead-light">
                         <th>
                             <h6> <strong>{{$foro->no_foro}}º {{$foro->nombre}}</strong></h6>
                             <h6>{{$foro->periodo}} {{$foro->anio}}</h6>
@@ -120,18 +123,18 @@
             </div>
         </form>
         @php
-        $fechas = $foro->fechas()->get();
+        $fechas = $foro->fechas()->orderBy('fecha')->get();
         @endphp
         @if($fechas->count()>0)
 
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover table-borderless table-sm justify-content-center">
                 <thead class="thead-light">
                     <tr>
-                        <th>Fecha</th>
-                        <th>Hora para el inicio del evento</th>
-                        <th>Hora para el final del evento</th>
-                        <th></th>
+                        <th><i class="fas fa-calendar-week"></i></th>
+                        <th><i class="fas fa-hourglass-start"></i></th>
+                        <th><i class="fa fa-hourglass-end"></i></th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -158,7 +161,7 @@
                                 </form>
                                 <button class="btn btn-primary btn-sm" data-target="#receso-{{$fecha->id}}"
                                     data-toggle="collapse" aria-expanded="false"
-                                    aria-controls="receso-{{$fecha->id}}">Elegir receso</button>
+                                    aria-controls="receso-{{$fecha->id}}"><i class="fa fa-coffee"></i></button>
                                 <button class="btn btn-warning btn-sm edit-fecha" value="{{$fecha->id}}" type="button"
                                     data-toggle="modal" data-target="#edit-fecha"><i class="fa fa-edit"></i></button>
                             </div>
@@ -168,7 +171,7 @@
                         <td colspan="4" class="notPadding">
                             <div id="receso-{{$fecha->id}}" class="collapse">
                                 <div class="row">
-                                    @foreach($fecha->horarioIntervalos($foro->duracion) as $key => $itemHoras)
+                                    @foreach($fecha->horarioIntervalos($foro->duracion,1) as $key => $itemHoras)
 
                                     <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3">
                                         <input fecha-foro="{{Crypt::encrypt($fecha->id)}}" type="checkbox"
@@ -210,7 +213,7 @@
             <div class="modal-body">
                 <div class="alert alert-danger">
                     ¡ADVERTENCIA!
-                    Tendrá que elegir de nuevo las horas para el receso
+                    Tendrá que elegir de nuevo las horas de descanso y la de los maestros participantes
                 </div>
                 <input type="hidden" name="id" id="id-fecha">
                 <div class="form-group">

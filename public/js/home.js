@@ -9,11 +9,6 @@ $(document).ready(function() {
     });
 });
 
-
-$(document).ready(function() {            
-    $('#alert-show').delay(1000).show('fast');
-});
-
 $(document).on('click', '.modal .editar', function() {
     // $('.editar').on('click', function() {    
     var element = $(this).parent().parent();

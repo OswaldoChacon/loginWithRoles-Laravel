@@ -28,11 +28,11 @@ Route::group(['middleware' => 'admin'], function () {
     Route::put('Oficina/configurarForo/{foro}', 'OficinaController@configurarForo')->name('configurarForo');
     Route::get('Oficina/foro/proyectos/{foro}', 'OficinaController@proyectos_foro')->name('proyectosForo');
 
-    //horario
+    //horario más bien es fecha-foro
     Route::post('Oficina/horarioforo/{foro}','OficinaController@horarioforo')->name('horarioforo');
     Route::delete('Oficina/horarioforo/{foro}/eliminar/{horario}','OficinaController@eliminarhorarioforo')->name('eliminarhorarioforo');
 
-    //foro_docente
+    //foro_docente esta en la petición ajax, considerar eliminar
     Route::post('Oficina/foroDocente/{id}', 'OficinaController@agregarForo_Docente')->name('foroDocente');
     Route::delete('Oficina/foroDocente/{foro}/eliminar/{docente}','OficinaController@eliminarForo_Docente')->name('foroDocenteDelete');
 
@@ -43,26 +43,27 @@ Route::group(['middleware' => 'admin'], function () {
     })->name('registrarView');
     Route::post('Oficina/registrar', 'UsersController@create')->name('registrar');
 
-    //jurado
+    //jurado uno de ellos no funciona, creo que es el segundo tampoco este que era la vcista
     Route::get('Oficina/proyectos_jurado', function () {
         $foro = App\Foros::where('acceso', 1)->first();
         $docentes = App\Roles::where('nombre', 'Docente')->first()->users()->get();
         return view('oficina.jurado.jurado', compact('foro','docentes'));
     })->name('jurado');
 
-    Route::get('Oficina/proyectos_jurado/{proyecto}', function ($id) {
-        $proyecto = App\Proyectos::find(Crypt::decrypt($id));
-        $docentes = App\Roles::where('nombre', 'Docente')->first()->users()->get();
-        return view('oficina.jurado.asignar_jurado', compact('proyecto', 'docentes'));
-    })->name('asignarjurado');
+    // Route::get('Oficina/proyectos_jurado/{proyecto}', function ($id) {
+    //     $proyecto = App\Proyectos::find(Crypt::decrypt($id));
+    //     $docentes = App\Roles::where('nombre', 'Docente')->first()->users()->get();
+    //     return view('oficina.jurado.asignar_jurado', compact('proyecto', 'docentes'));
+    // })->name('asignarjurado');
 
-    Route::post('Oficina/asignar_jurado/{proyecto}', 'OficinaController@asignarJurado')->name('asignarJuradoPOST');
-    Route::delete('Oficina/proyectos_jurado/{proyecto}/eliminar_jurado/{docente}', 'OficinaController@eliminarJurado')->name('eliminarJurado');
+    //Route::post('Oficina/asignar_jurado/{proyecto}', 'OficinaController@asignarJurado')->name('asignarJuradoPOST');
+    //Route::delete('Oficina/proyectos_jurado/{proyecto}/eliminar_jurado/{docente}', 'OficinaController@eliminarJurado')->name('eliminarJurado');
 
     //ajax
     Route::post('proyecto/participa', 'OficinaController@proyectoParticipa');
     Route::post('proyecto/asignar_jurado', 'OficinaController@asignarJurado');
     Route::post('proyecto/eliminar_jurado', 'OficinaController@eliminarJurado');
+
     Route::post('Oficina/foroDocente', 'OficinaController@agregarForo_Docente');
     Route::post('Oficina/foroEliminarDocente', 'OficinaController@eliminarForo_Docente');
 
@@ -75,6 +76,15 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('Oficina/configurarForo/editarhorarioforo/{horario_foro}','OficinaController@editarhorarioforo');
     Route::put('Oficina/configurarForo/actualizarhorarioforo/{horario_foro}','OficinaController@actualizarhorarioforo');
 
+    // horario-jurado
+    Route::post('Oficina/horariojurado','OficinaController@horariojurado')->name('horariojurado');
+    Route::post('Oficina/eliminarhorariojurado','OficinaController@eliminarhorariojurado')->name('eliminarhorariojurado');
+
+    //horario
+    Route::get('Oficina/horario','OficinaController@horarioView')->name('horarioView');
+
+
+    Route::post('Oficina/generarHorarioAnt','OficinaController@generarhorario')->name('generarhorario');
 
     Route::view('Oficina/fechasForo','oficina.foros.fechas',
     ['foro'=> App\Foros::where('acceso',true)->first()]);

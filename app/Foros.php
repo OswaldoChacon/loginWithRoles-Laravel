@@ -30,4 +30,9 @@ class Foros extends Model
     {
         return $this->hasMany('App\FechasForo');
     }
+
+    public function prefijo()
+    {
+        
+    }
 }
