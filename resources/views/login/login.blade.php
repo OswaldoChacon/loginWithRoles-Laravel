@@ -39,7 +39,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">@</span>
                     </div>
-                    <input type="email" name="email" class="form-control" placeholder="Email">
+                    <input type="text" name="num_control" class="form-control" placeholder="Número de control">
                 </div>
                 {!! $errors->first('email','<span class="text-danger">:message</span>')!!}
                 <div class="input-group input-group-sm mb-2">
@@ -51,10 +51,7 @@
                     <input type="password" name="password" class="form-control" placeholder="Contraseña">
                 </div>
                 {!! $errors->first('password','<span class="text-danger">:message</span>')!!}
-                <button type="submit" class="btn btn-success btn-sm col">Iniciar sesión</button>
-                <div style="text-align: center; margin-top:20px">
-                    <a href="{{route('register')}}">Registrarse</a>
-                </div>
+                <button type="submit" class="btn btn-success btn-sm col">Iniciar sesión</button>                
                 <div style="text-align: center; margin-top:20px">
                     <a href="{{route('password.request')}}">¿Olvidaste tu contraseña?</a>
                 </div>

@@ -12,16 +12,20 @@
         <div class="table-responsive">
             <table class="table">
                 <thead>
-                    <th>Titulo</th>
+                    <th>Folio</th>
+                    <th>Proyecto</th>
                     <th>Empresa</th>
-                    <th>Linea de investigación</th>
+                    <th>T.P.</th>
+                    <th>Linea de inv.</th>                    
                     <th>Calificaciones</th>
                 </thead>
                 <tbody>
                     @foreach($proyectos as $proyecto)
                     <tr>
+                        <td>{{$proyecto->folio}}</td>
                         <td>{{$proyecto->titulo}}</td>
                         <td>{{$proyecto->empresa}}</td>
+                        <td>{{$proyecto->tipos_proyectos['nombre']}}</td>
                         <td>{{$proyecto->lineadeinvestigacion['nombre']}}</td>
                         <td>
                             <button type="button" class="btn btn-primary btn-sm" data-toggle="collapse" data-target="#calificaciones" aria-expanded="true" aria-controls="calificaciones">Calificaciones</button>
@@ -35,7 +39,9 @@
                     @endforeach
                 </tbody>
             </table>
-        </div>       
+        </div>
+        @elseif(Auth::user()->proyectos()->where('aceptado',0)->get())
+            <div class="alert alert-danger">Proyecto aun no aceptado</div>
         @else
             <div class="alert alert-danger">No tienes ningun proyecto registrado</div>
         @endif

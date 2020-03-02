@@ -52,7 +52,7 @@
                         <tr>
                             <td>Limite de alumnos por proyecto: <strong>{{$foro->lim_alumnos}}</strong> </td>
                             <td><input class="form-inline" type="number" value="{{$foro->lim_alumnos}}"
-                                    name="lim_alumnos" inputmode="Numero de  foro" style='width:70px; height:25px' />
+                                    name="lim_alumnos" min="1"  style='width:70px; height:25px' />
                                 {!! $errors->first('lim_alumnos','<span class="text-danger">:message</span>')!!}
                             </td>
                             <!-- <p id="agregarHora">&nbsp;</p> -->
@@ -60,7 +60,7 @@
                         <tr>
                             <td>Duración de exposición por evento: <strong> {{$foro->duracion}} min </strong></td>
                             <td><input class="form-inline" type="number" name="duracion" value="{{$foro->duracion}}"
-                                    class="form-control" min="10" pattern="[0-9]" style='width:70px; height:25px' />
+                                    class="form-control" min="15" pattern="[0-9]" style='width:70px; height:25px' />
                                 {!! $errors->first('duracion','<span class="text-danger">:message</span>')!!}
                             </td>
                         </tr>
@@ -68,7 +68,7 @@
                             <td>Número de aulas a utilizar en el evento: <strong> {{$foro->num_aulas}} </strong>
                             </td>
                             <td><input class="form-inline" type="number" name="num_aulas" value="{{$foro->num_aulas}}"
-                                    class="form-control" min="1" max="5" pattern="[0-9]"
+                                    class="form-control" min="1" pattern="[0-9]"
                                     style='width:70px; height:25px' />
                                 {!! $errors->first('num_aulas','<span class="text-danger">:message</span>')!!}
                             </td>
@@ -126,7 +126,6 @@
         $fechas = $foro->fechas()->orderBy('fecha')->get();
         @endphp
         @if($fechas->count()>0)
-
         <div class="table-responsive">
             <table class="table table-hover table-borderless table-sm justify-content-center">
                 <thead class="thead-light">
@@ -162,7 +161,7 @@
                                 <button class="btn btn-primary btn-sm" data-target="#receso-{{$fecha->id}}"
                                     data-toggle="collapse" aria-expanded="false"
                                     aria-controls="receso-{{$fecha->id}}"><i class="fa fa-coffee"></i></button>
-                                <button class="btn btn-warning btn-sm edit-fecha" value="{{$fecha->id}}" type="button"
+                                <button class="btn btn-warning btn-sm edit-fecha" value="{{Crypt::encrypt($fecha->id)}}" type="button"
                                     data-toggle="modal" data-target="#edit-fecha"><i class="fa fa-edit"></i></button>
                             </div>
                         </td>
@@ -172,7 +171,6 @@
                             <div id="receso-{{$fecha->id}}" class="collapse">
                                 <div class="row">
                                     @foreach($fecha->horarioIntervalos($foro->duracion,1) as $key => $itemHoras)
-
                                     <div class="col-sm-6 col-md-4 col-lg-3 col-xl-3">
                                         <input fecha-foro="{{Crypt::encrypt($fecha->id)}}" type="checkbox"
                                             class="checkItemHoras" name="itemHoras" id="check-{{$posicion}}"
@@ -187,16 +185,20 @@
                                     @endphp
                                     @endforeach
                                 </div>
-
                             </div>
                         </td>
                     </tr>
                     @endforeach
-
                 </tbody>
             </table>
-        </div>
-
+        </div>        
+        @php
+            $receso = $foro->fechas()->with('receso')->get()->pluck('receso')->flatten()->count();
+        @endphp
+        {{-- @dd($posici, (($posicion)- $receso) * $foro->num_aulas,$foro->proyectos()->where('participa',1)->count()) --}}
+        @if ((($posicion) - $receso) * $foro->num_aulas < $foro->proyectos()->where('participa',1)->count())
+        <div class="alert alert-danger">No hay suficientes espacios de tiempo para asignar todos los proyectos</div>
+        @endif
         @endif
     </div>
 </div>
@@ -249,7 +251,7 @@
 
             @endphp
             @foreach($docentes as $docente)
-            <div class="form-check col-lg-3 col-xl-3">
+            <div class="form-check col-lg-4 col-xl-4">
                 <input id-foro="{{Crypt::encrypt($foro->id)}}" class="checkItemDocenteForo" id="jurado-{{$docente->id}}"
                     type="checkbox" name="docente" value="{{Crypt::encrypt($docente->id)}}"
                     {{$maestros->contains($docente->id) == true ? 'checked' : ''}}>
@@ -269,141 +271,8 @@
 
 @push('scripts')
 <script>
-    $('.checkItemDocenteForo').change(function() {
-        $(".loaderContainer").addClass('active');
-        var idDocente = $(this).val();
-        var idForo = $(this).attr('id-foro');
-        var value = $(this).prop('checked') == true ? 1 : 0;
-        var url;
-        if (value == 1)
-            url = '/Oficina/foroDocente';
-        else
-            url = '/Oficina/foroEliminarDocente';
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('input[name="_token"]').val()
-            },
-            type: 'post',
-            url: url,
-            data: {
-                idForo: idForo,
-                idDocente: idDocente,
-            },
-            success: function() {
-                $(".loaderContainer").removeClass('active');
-                location.reload();
-            },
-            error: function(error) {
-                var errors = error.responseText;
-                var json = error.responseJSON;
-                console.log(json.error);
-                $(this).prop('checked', false);
-                $(".loaderContainer").removeClass('active');
-                $(".messageContainer").addClass('active');
-                $(".messageContainer .message .icon").html('');
-                $(".messageContainer .message .icon").append('<i class="fas fa-envelope"></i>');
-                $(".messageContainer .message .title p").text('¡Error!');
-                $(".messageContainer .message .description p").text(json.error);
-                // 'Ocurrió un error al intentar conectar al servidor. Inténtelo más tarde.'
-                setTimeout(() => {
-                    $(".messageContainer").removeClass('active');
-                }, 1000);
-            }
-        });
 
-    });
-    $('.checkItemHoras').change(function() {
-        $(".loaderContainer").addClass('active');
-        var valueCheckebox = $(this).prop('checked') == true ? 1 : 0;
-        //var horariobreak = valueItemHoras
-        var hora = $("label[for='" + this.id + "']").text();
-        var posicion = $(this).val();
-        var idFecha = $(this).attr('fecha-foro');
-        var url;
-        if (valueCheckebox == 1)
-            url = 'horariobreak';
-        else
-            url = 'deletehorariobreak';
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('input[name="_token"]').val()
-            },
-            type: 'post',
-            url: url,
-            data: {
-                hora: hora,
-                posicion: posicion,
-                idFecha: idFecha
-            },
-            //dataType: "dataType",
-            success: function(response) {
-                $(".loaderContainer").removeClass('active');
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert(jqXHR.status); //500
-                alert(textStatus); //error
-                alert(errorThrown); //mensaje intersal
-
-                var errors = error.responseText;
-                var json = error.responseJSON;
-                console.log(json.error);
-                $(this).prop('checked', false);
-                $(".loaderContainer").removeClass('active');
-                $(".messageContainer").addClass('active');
-                $(".messageContainer .message .icon").html('');
-                $(".messageContainer .message .icon").append('<i class="fas fa-envelope"></i>');
-                $(".messageContainer .message .title p").text('¡Error!');
-                $(".messageContainer .message .description p").text(json.error);
-                // 'Ocurrió un error al intentar conectar al servidor. Inténtelo más tarde.'
-                setTimeout(() => {
-                    $(".messageContainer").removeClass('active');
-                }, 1000);
-            }
-        });
-
-    });
-    $('.edit-fecha').click(function() {
-        var idFecha = $(this).val();
-        $.ajax({
-            type: "get",
-            dataType: "json",
-            url: "editarhorarioforo/" + idFecha,
-
-            success: function(response) {
-                console.log(response.fecha);
-                $('#id-fecha').val(response.id);
-                $('#fecha').val(response.fecha);
-                $('#hora_inicio').val(response.hora_inicio);
-                $('#hora_termino').val(response.hora_termino);
-                
-            }
-        });
-    });
-
-    $('.actualizar-fecha').click(function(){
-        var idFecha = $('#id-fecha').val();
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('input[name="_token"]').val()
-            },
-            type: "put",
-            url: "actualizarhorarioforo/"+idFecha,
-            data: {
-                fecha: $('#fecha').val(),
-                hora_inicio: $('#hora_inicio').val(),
-                hora_termino: $('#hora_termino').val()
-            },
-            success: function (response) {
-                //$('.modal-body').prepend('<div class="alert alert-success" id="alert-fade">Fecha actualizada</div>');
-                //setTimeout(function(){
-                 //   $('.alert-success').fadeOut("slow",function(){
-                  //      $(this).remove();
-                    //});
-                //},2000);
-                location.reload();
-            }
-        });
-    });
-   
+  
+    
 </script>
 @endpush

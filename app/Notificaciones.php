@@ -20,4 +20,5 @@ class Notificaciones extends Model
     {
         return $this->belongsTo('App\Proyectos','proyecto_id');
     }
+    
 }

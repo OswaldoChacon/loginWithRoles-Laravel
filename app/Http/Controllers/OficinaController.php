@@ -6,33 +6,85 @@ use App\FechasForo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
+
 use App\LineasDeInvestigacion;
 use App\Foros;
 use App\HorarioBreak;
 use App\HorarioJurado;
 use App\Roles;
-use App\Http\Requests\ForoRequest;
-use App\Http\Requests\RegistroLineaRequest;
-use App\Http\Requests\EditLineaRequest;
-use App\Http\Requests\GenerarHorarioRequest;
-use App\Http\Requests\JuradoRequest;
-use App\Http\Requests\HorarioRequest;
 use App\Proyectos;
 use App\User;
+use App\TiposProyectos;
+
+use App\Http\Requests\Foro\ForoRequest;
+
+use App\Http\Requests\Linea\RegistroLineaRequest;
+use App\Http\Requests\Linea\EditLineaRequest;
+
+use App\Http\Requests\Usuarios\RegistroRequest;
+use App\Http\Requests\Usuarios\EditarUsuarioRequest;
+
+
+use App\Http\Requests\Horarios\GenerarHorarioRequest;
+use App\Http\Requests\JuradoRequest;
+use App\Http\Requests\Horarios\HorarioRequest;
+
 use App\GenerarHorario\Problema;
 use App\GenerarHorario\Main;
-use Exception;
-use Illuminate\Database\Eloquent\Builder;
+use App\Http\Controllers\Traits\Uppercase;
+use App\Http\Requests\Horarios\EditarHorarioRequest;
+use App\Http\Requests\Tipos\EditarTiposRequest;
+use App\Http\Requests\Tipos\RegistrarTiposRequest;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use App\Mail\Confirmacion;
+
 
 class OficinaController extends Controller
 {
+    use Uppercase;
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');        
         $this->middleware('admin');
+        // ,['only'=>['create']]
     }
     //
+    public function create(RegistroRequest $request)
+    {
+        $cod_confirmacion = Str::random(25);
+        $datos_formulario = [
+            'nombre' => strtoupper($request->nombre),
+            'email' => $request->email,
+            'cod_confirmacion' => $cod_confirmacion,
+        ];
+        // dd($request->nombre);
+        $rol = Roles::find(Crypt::decrypt($request->rol));
+        $nuevoUsuario = new User();
+        $nuevoUsuario->fill($request->all());
+        $nuevoUsuario->password = bcrypt($request->num_control);
+        $nuevoUsuario->cod_confirmacion = $cod_confirmacion;
+        $nuevoUsuario->save();
+        $nuevoUsuario->roles()->attach($rol);
+        Mail::to($request->email)->send(new Confirmacion($datos_formulario));
+        return back()->with('success', 'Usuario registrado');
+    }
+    public function getUsuario($id)
+    {
+        $usuario = User::find(Crypt::decrypt($id));
+        return response()->json($usuario);
+    }
+    public function actualizarUsuario(EditarUsuarioRequest $request, $id)
+    {
+        $usuario = User::find(Crypt::decrypt($id));
+        $usuario->fill($request->all());
+        $usuario->save();
+    }
+    public function eliminarusuario($id)
+    {
+        User::find(Crypt::decrypt($id))->delete();
+        return back()->with('success', 'Usuario eliminado');
+    }
     public function lineasdeinvestigacion()
     {
         $lineasdeinvestigacion = LineasDeInvestigacion::all();
@@ -48,17 +100,67 @@ class OficinaController extends Controller
     }
     public function lineadeinvestigacioneliminar($id)
     {
-        $id = Crypt::decrypt($id);
-        LineasDeInvestigacion::where('id', $id)->delete();
+        $linea = LineasDeInvestigacion::find(Crypt::decrypt($id));
+        if ($linea->proyectos()->count() > 0)
+            return back()->with('error', 'No se puede eliminar el registro');
+        $linea->delete();
         return back()->with('success', 'Registro eliminado');
+    }
+    public function getlineadeinvestigacion($id_linea)
+    {
+        $linea = LineasDeInvestigacion::find(Crypt::decrypt($id_linea));
+        //validacion necesaria?
+        return $linea;
     }
     public function lineadeinvestigacionactualizar(EditLineaRequest $request, $id)
     {
-        $id =  Crypt::decrypt($id);
-        $lineaUpdate = LineasDeInvestigacion::where('id', $id)->first();
+        //dd($request);
+        //$id =  Crypt::decrypt($id);        
+        $lineaUpdate = LineasDeInvestigacion::find(Crypt::decrypt($id));
+        if (is_null($lineaUpdate))
+            return back()->with('error', 'Error al actualizar el registro');
         $lineaUpdate->clave = $request->clave;
         $lineaUpdate->nombre = $request->nombre;
         $lineaUpdate->save();
+        return back()->with('success', 'Registro actualizado');
+    }
+    public function tipos_proyectos()
+    {
+        $tipos_proyectos = TiposProyectos::all();
+        return view('oficina.tipos', compact('tipos_proyectos'));
+    }
+    public function registrar_tipos_proyectos(RegistrarTiposRequest $request)
+    {
+        $tipo_proyecto = new TiposProyectos();
+        $tipo_proyecto->fill($request->all());
+        // $linea->clave = $request->clave;
+        // $linea->nombre = $request->nombre;
+        $tipo_proyecto->save();
+        return back()->with('success', 'Linea registrada');
+    }
+    public function eliminar_tipos_proyectos($id)
+    {
+        $tipo_proyecto = TiposProyectos::find(Crypt::decrypt($id));
+        if ($tipo_proyecto->proyectos()->count() > 0)
+            return back()->with('error', 'No se puede eliminar el registro');
+        $tipo_proyecto->delete();
+        return back()->with('success', 'Registro eliminado');
+    }
+    public function get_tipos_proyectos($id)
+    {
+        $tipo_proyecto = TiposProyectos::find(Crypt::decrypt($id));
+        //validacion necesaria?
+        return $tipo_proyecto;
+    }
+    public function actualizar_tipos_proyectos(EditarTiposRequest $request, $id)
+    {
+        $tipo_proyecto = TiposProyectos::find(Crypt::decrypt($id));
+        if (is_null($tipo_proyecto))
+            return back()->with('error', 'Error al actualizar el registro');
+        // $lineaUpdate->clave = $request->clave;
+        // $lineaUpdate->nombre = $request->nombre;
+        $tipo_proyecto->fill($request->all());
+        $tipo_proyecto->save();
         return back()->with('success', 'Registro actualizado');
     }
     public function perfil()
@@ -67,7 +169,8 @@ class OficinaController extends Controller
     }
     public function foros()
     {
-        $foros = Foros::all();
+        $foros = Foros::orderBy('anio')->orderBy('periodo', 'desc')->get();
+        //dd($foros);
         return view('oficina.foros.foros', compact('foros'));
     }
     public function guardarForo(ForoRequest $request)
@@ -92,10 +195,10 @@ class OficinaController extends Controller
     }
     public function eliminarForo($id)
     {
-        try {
-        } catch (\Iluminate\Database\QueryException $e) {
-        }
         $id = Crypt::decrypt($id);
+        $foro = Foros::find($id);
+        if ($foro->proyectos()->count() > 0)
+            return back()->with('error', 'No se puede eliminar registro');
         Foros::find($id)->delete();
         return back()->with('success', 'Foro eliminado');
     }
@@ -130,14 +233,16 @@ class OficinaController extends Controller
     public function configurarForo(Request $request, $id)
     {
         $rules = [
-            'lim_alumnos' => 'required',
-            'num_aulas' => 'required',
-            'duracion' => 'required',
-            'num_maestros' => 'required'
+            'lim_alumnos' => 'required|numeric|min:1',
+            'num_aulas' => 'required|numeric|min:1',
+            'duracion' => 'required|numeric|min:15',
+            'num_maestros' => 'required|numeric|min:1'
         ];
         $validate = $request->validate($rules);
         $id = Crypt::decrypt($id);
         $foro = Foros::find($id);
+        if ($foro->acceso == false)
+            return back()->with('error', 'El foro no esta activo');
         $foro->lim_alumnos = $request->lim_alumnos;
         $foro->num_aulas = $request->num_aulas;
         $foro->duracion = $request->duracion;
@@ -173,15 +278,18 @@ class OficinaController extends Controller
     {
         $id = Crypt::decrypt($id);
         $foro = Foros::find($id);
-        $proyectos = $foro->proyectos()->get();
-        return view('oficina.foros.proyectos_foro', compact('foro', 'proyectos'));
+        $proyectosAceptados = $foro->proyectos()->where('aceptado', 1)->get();
+        $proyectosPendientes = $foro->proyectos()->where('aceptado', 0)->get();
+        return view('oficina.foros.proyectos_foro', compact('foro', 'proyectosAceptados', 'proyectosPendientes'));
     }
 
     public function proyectoParticipa(Request $request)
     {
-        $id = $request->get('id');
+        $id = Crypt::decrypt($request->get('id'));
         $value = $request->get('value');
         $proyecto = Proyectos::find($id);
+        if (!$proyecto->aceptado)
+            return response()->json(['Error' => 'El proyecto aún no ha sido aceptado'], 500);
         $proyecto->participa = $value;
         $proyecto->save();
         // DB::table('proyectos')
@@ -191,15 +299,19 @@ class OficinaController extends Controller
     public function asignarJurado(Request $request)
     {
         // pendiente validacion        
-        $proyecto = Proyectos::find($request->idProyecto);
+        $proyecto = Proyectos::find(Crypt::decrypt($request->idProyecto));
         $foro = $proyecto->foro()->first();
-        $jurado = User::find($request->idDocente);
+        if ($proyecto->proyecto_jurado()->count() + 1 > $foro->num_maestros)
+            return response()->json(['Error' => 'Cantidad de maestros excedido'], 422);
+        $jurado = User::find(Crypt::decrypt($request->idDocente));
         $jurado->jurado_proyecto()->attach($proyecto);
     }
     public function eliminarJurado(Request $request)
     {
-        $jurado = User::find($request->idDocente);
-        $proyecto = Proyectos::find($request->idProyecto);
+        $jurado = User::find(Crypt::decrypt($request->idDocente));
+        $proyecto = Proyectos::find(Crypt::decrypt($request->idProyecto));
+        if ($proyecto->asesor == $jurado->id)
+            return response()->json(['Error' => 'No se puede quitar al asesor como parte del jurado'], 422);
         $jurado->jurado_proyecto()->detach($proyecto);
     }
 
@@ -210,26 +322,28 @@ class OficinaController extends Controller
         $fecha->fill($request->all());
         $fecha->foros_id = $foro->id;
         $fecha->save();
-        HorarioBreak::truncate();
+        //HorarioBreak::truncate();
         return back();
     }
     public function eliminarhorarioforo($foro_id, $fecha_id)
     {
         $foro = Foros::find(Crypt::decrypt($foro_id))->where('acceso', true)->first();
         $fecha = FechasForo::find(Crypt::decrypt($fecha_id));
-        // dd($fecha->has('receso')->delete(),$fecha->receso()->get()->flatten());
+        // dd($fecha->has('receso')->delete(),$fecha->receso()->get()->flatten());        
         $fecha->delete();
         return back();
         // dd($foro,$fecha);
     }
     public function editarhorarioforo($id)
     {
-        $fecha = FechasForo::find($id);
+        $fecha = FechasForo::find(Crypt::decrypt($id));
+        if (is_null($fecha))
+            return response()->json(['Error' => 'Error al identificar la fecha'], 404);
         return response()->json($fecha);
     }
-    public function actualizarhorarioforo(Request $request, $idFecha)
+    public function actualizarhorarioforo(EditarHorarioRequest $request, $idFecha)
     {
-        $fecha = FechasForo::find($idFecha);
+        $fecha = FechasForo::find(Crypt::decrypt($idFecha));
         $fecha->fill($request->all());
         $fecha->save();
         $fecha->receso()->delete();
@@ -274,15 +388,17 @@ class OficinaController extends Controller
         $receso = new HorarioBreak();
         $receso->fill($request->all());
         $receso->fechas_foros_id = $fecha->id;
-        $test = $receso->fechas_foros()->with(['horario_jurado' => function($query) use($request){
-            $query->where('posicion',$request->posicion);
+        $test = $receso->fechas_foros()->with(['horario_jurado' => function ($query) use ($request) {
+            $query->where('posicion', $request->posicion);
         }])->get()->pluck('horario_jurado')->flatten()->toArray();
         //dd(json_decode($test));
         //return $test;
-        $ids_to_delete = array_map(function($item){ return $item['id']; }, $test);
+        $ids_to_delete = array_map(function ($item) {
+            return $item['id'];
+        }, $test);
         //return $ids_to_delete;
-        DB::table('horario_jurado')->whereIn('id', $ids_to_delete)->delete(); 
-       
+        DB::table('horario_jurado')->whereIn('id', $ids_to_delete)->delete();
+
         //dd(json_decode($test));
         $receso->save();
     }
@@ -376,8 +492,9 @@ class OficinaController extends Controller
         if (sizeof($horarioDocentes) != sizeof($cantidadMaestro_Jurado) || $cantidadDeET < sizeof($proyectos_maestros)) {
             return response()->noContent();
         }
-        //Nuevo 05 dic
         
+        //Nuevo 05 dic
+
         $main = new Main($proyectos_maestros, $maestro_et, $intervalosUnion, $request->alpha, $request->beta, $request->Q, $request->evaporation, $request->iterations, $request->ants, $request->estancado,  $request->t_minDenominador, $foro->num_aulas, $recesos);
         //validacion ultima
         // $cantidadProyectosMA = DB::table('jurados')->select(DB::raw('count(id_docente) as cantidad, group_concat(distinct docentes.prefijo," ",docentes.nombre," ",docentes.paterno," ",docentes.materno) as nombre'))
@@ -448,7 +565,7 @@ class OficinaController extends Controller
                 $resultadoItem[str_replace($horarios[$indice]->fecha, '', $key)] = $tituloLlave;
             }
         }
-        
+
         // DB::table('horariogenerado')
         //     ->delete();
         // DB::statement('ALTER TABLE horariogenerado AUTO_INCREMENT =1');
@@ -459,7 +576,7 @@ class OficinaController extends Controller
         foreach ($resultado as $date => $dates) {
             foreach ($dates as $hour => $hours) {
                 $cont = 0;
-               foreach ($hours as $event => $events) {
+                foreach ($hours as $event => $events) {
                     // $cont= 0;
                     // $cont++;
                     if ($events != null && sizeof($events) > 1) {
@@ -470,7 +587,7 @@ class OficinaController extends Controller
                             $project = DB::table('proyectos')->select('proyectos.id as id')
                                 ->join('foros', 'proyectos.foros_id', '=', 'foros.id')
                                 ->where('proyectos.folio', '=', $event)->where('foros.acceso', 1)->first();
-                             //  dd($project);
+                            //  dd($project);
                             $docentes = DB::TABLE('users')->select('id')
                                 ->where(DB::raw("CONCAT(nombre, ' ', apellidoP,' ', apellidoM)"), '=', $item)->first();
                             array_push($testFinal, $date, $hour, $project->id, $docentes->id, $cont);
@@ -481,7 +598,7 @@ class OficinaController extends Controller
                 }
             }
         }
-        return $testFinal2;
+        // return $testFinal2;
         // foreach ($testFinal2 as $registro) {
         //     DB::table('horariogenerado')->insert([
         //         [
@@ -494,5 +611,90 @@ class OficinaController extends Controller
         //     ]);
         // }
         return $resultado;
+    }
+    public function proyectosHorarioMaestros()
+    {
+        
+        $foro = Foros::where('acceso', 1)->first();
+        $horarios =    $horarios = $foro->fechas()->orderBy('fecha')->get();
+        
+        // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
+        $min =  $foro->duracion;        
+        $minutos =  $foro->duracion;
+        $longitud = count($horarios);
+        // dd($longitud);
+        $temp = " ";
+        $temp2 = " ";
+        $intervalosContainer = array();
+        $testTable = array();
+        $intervalosUnion = array();
+        foreach ($horarios as $item) {
+            $intervalosContainer[$item->fecha] = [];
+        }        
+        $indice = 0;
+        foreach ($horarios as $item) {
+            $intervalo = array();            
+            while ($item->hora_inicio <= $item->hora_termino) {
+                $intervalo[$indice] = [];
+                $newDate = strtotime('+0 hour', strtotime($item->hora_inicio));
+                $newDate = strtotime('+' . $minutos . 'minute', $newDate);                
+                $newDate = date('H:i', $newDate);
+                $temp = date('H:i', strtotime($item->hora_inicio)) . " - " . $newDate;                                                
+                $item->hora_inicio = $newDate;
+                if ($newDate <= $item->hora_termino) 
+                {
+                    $intervalo[$indice] = $temp;                
+                    $intervalosContainer[$item->fecha] = $intervalo;
+                }                    
+                $indice++;                
+            }                        
+        }                                
+        foreach ($intervalosContainer as $intervaloTotal) {
+            foreach ($intervaloTotal as $itemIntervaloTotal) {
+                $intervalosUnion[] = $itemIntervaloTotal;
+            }
+        }               
+        $proyectos_maestros =  DB::table('jurados')->select('proyectos.folio as id_proyecto', 'proyectos.titulo', DB::raw('group_concat( Distinct users.prefijo," ",users.nombre," ",users.apellidoP," ",users.apellidoM) as maestros'))
+        ->join('users', 'jurados.docente_id', '=', 'users.id')
+        ->join('proyectos', 'jurados.proyecto_id', '=', 'proyectos.id')
+        
+        ->join('foros','proyectos.foros_id','=','foros.id')
+
+        ->where('proyectos.participa', 1)
+        ->where('acceso',1)
+        ->groupBy('proyectos.titulo')
+        ->get()->each(function ($query) {
+            $query->maestros = explode(",", $query->maestros);
+        });    
+        $maestro_et = DB::table('horario_jurado')
+        ->select(DB::raw('group_concat(distinct users.prefijo," ",users.nombre," ",users.apellidoP," ",users.apellidoM) as nombre'), DB::raw('count(hora) as cantidad'), DB::raw('group_concat(horario_jurado.posicion) as horas'))
+        ->join('users', 'horario_jurado.docente_id', '=', 'users.id')
+        ->join('fechas_foros', 'horario_jurado.fechas_foros_id', '=', 'fechas_foros.id')
+        ->join('foros', 'fechas_foros.foros_id', '=', 'foros.id')
+        // ->join('proyectos','foros.id','=','proyectos.foros_id')
+        ->where('foros.acceso', 1)
+        // ->where('proyectos.participa',1)
+        ->groupBy('docente_id')
+        ->orderBy('cantidad')->get()->each(function ($query) {            
+            $query->horas = array_filter(explode(",", $query->horas), function ($value) {
+                return ($value !== null && $value !== false && $value !== '');
+            });
+        });              
+        $problema = new Problema($proyectos_maestros, $maestro_et, []);
+        $proyectos = $problema->eventos;
+
+// dd($maestro_et);
+        $cantidadProyectosMA = DB::table('jurados')->select(DB::raw('count(docente_id) as cantidad, group_concat(distinct users.prefijo," ",users.nombre," ",users.apellidoP," ",users.apellidoM) as nombre'))
+            //DB::raw('group_concat(distinct docentes.prefijo," ",docentes.nombre," ",docentes.paterno," ",docentes.maternos) as nombre')
+            ->join('users', 'jurados.docente_id', '=', 'users.id')
+            ->join('proyectos', 'jurados.proyecto_id', '=', 'proyectos.id')
+            ->where('proyectos.participa', 1)
+            ->groupBy('docente_id')
+            ->orderBy('cantidad')->get();                                   
+        $receso = $foro->fechas()->with('receso')->get()->pluck('receso')->flatten()->count();
+        $espacios_de_tiempo = sizeof($intervalosUnion)-$receso;
+        $aulas = ($foro->num_aulas * $espacios_de_tiempo);             
+        // dd($foro->num_aulas, sizeof($intervalosUnion), $receso, $aulas,$intervalosUnion);        
+        return view('oficina.horario.proyectos', compact('foro','proyectos', 'intervalosContainer', 'cantidadProyectosMA', 'aulas'));
     }
 }

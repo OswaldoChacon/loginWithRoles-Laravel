@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Horarios;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-class ForoRequest extends FormRequest
+use Carbon\Carbon;
+
+class HorarioRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +26,9 @@ class ForoRequest extends FormRequest
     {
         return [
             //
-            'no_foro'=>'required|numeric|unique:foros',
-            'nombre'=>'required',
-            'periodo'=>'required',
-            'anio'=>'required|integer|min:'.date('Y').'|max:'.(date('Y')+2)
+            'fecha'     => 'required|unique:fechas_foros,fecha|date|after_or_equal:' . Carbon::now()->toDateString(),
+            'hora_inicio'  => 'required|date_format:H:i',
+            'hora_termino'   => 'required|date_format:H:i|after:hora_inicio'
         ];
     }
 }

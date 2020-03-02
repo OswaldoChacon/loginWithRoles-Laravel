@@ -4,7 +4,7 @@
 
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     background: #fafafa;
 }
 
@@ -24,23 +24,25 @@ body {
 
 /* Loader */
 
-.loaderContainer, .messageContainer {
+.loaderContainer,
+.messageContainer {
     position: fixed;
     width: 100%;
     height: 100%;
     left: 0;
     top: 0;
-    background-color: rgba(255, 255, 255, .7);
+    background-color: rgba(255, 255, 255, 0.7);
     visibility: hidden;
     opacity: 0;
-    transition: ease all .3s;
+    transition: ease all 0.3s;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1;
 }
 
-.loaderContainer.active, .messageContainer.active {
+.loaderContainer.active,
+.messageContainer.active {
     visibility: visible;
     opacity: 1;
 }
@@ -49,8 +51,8 @@ body {
     width: 55px;
     height: 55px;
     border-radius: 50%;
-    border-left: 3px solid #0D47A1;
-    border-top: 3px solid #0D47A1;
+    border-left: 3px solid #0d47a1;
+    border-top: 3px solid #0d47a1;
     border-bottom: 0px solid transparent;
     border-right: 0px solid transparent;
 }
@@ -86,7 +88,7 @@ body {
 .messageContainer .message .icon {
     text-align: center;
     font-size: 3em;
-    color: #0D47A1;
+    color: #0d47a1;
 }
 
 .messageContainer .message .title {
@@ -106,14 +108,16 @@ body {
 /* End alert message */
 
 p {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-size: 1.1em;
     font-weight: 300;
     line-height: 1.7em;
     color: #999;
 }
 
-a, a:hover, a:focus {
+a,
+a:hover,
+a:focus {
     color: inherit;
     text-decoration: none;
     transition: all 0.3s;
@@ -121,7 +125,7 @@ a, a:hover, a:focus {
 
 .navbar {
     padding: 15px 10px;
-    background: #0D47A1 !important;
+    background: #0d47a1 !important;
     border: none;
     border-radius: 0;
     margin-bottom: 40px;
@@ -180,14 +184,14 @@ a, a:hover, a:focus {
     margin-left: -250px;
 }
 /* new to sidebar static */
-#sidebar.active + #content{
+#sidebar.active + #content {
     /* width: 100%;         */
-    padding-left:20px;
+    padding-left: 20px;
 }
 
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #0D47A1;
+    background: #0d47a1;
 }
 
 #sidebar ul.components {
@@ -210,11 +214,12 @@ a, a:hover, a:focus {
 }
 
 #sidebar ul li a:hover {
-    color: #7386D5;
-    background: #E6E6E6;
+    color: #7386d5;
+    background: #e6e6e6;
 }
 
-#sidebar ul li.active>a, a[aria-expanded="true"] {
+#sidebar ul li.active > a,
+a[aria-expanded="true"] {
     color: #000;
     background: #fff;
 }
@@ -236,7 +241,7 @@ a[data-toggle="collapse"] {
 ul ul {
     font-size: 0.9em !important;
     padding-left: 40px !important;
-    background: #E6E6E6;
+    background: #e6e6e6;
 }
 
 ul.CTAs {
@@ -253,10 +258,11 @@ ul.CTAs a {
 
 a.download {
     background: #fff;
-    color: #7386D5;
+    color: #7386d5;
 }
 
-a.article, a.article:hover {
+a.article,
+a.article:hover {
     background: #6d7fcc !important;
     color: #fff !important;
 }
@@ -273,7 +279,6 @@ a.article, a.article:hover {
     transition: all 0.3s;
     position: relative;
 
-
     /*  */
     /* position: relative;
     padding-left: 260px; */
@@ -289,7 +294,6 @@ a.article, a.article:hover {
     z-index: 1; */
 }
 
-
 /* ---------------------------------------------------
     MEDIAQUERIES
 ----------------------------------------------------- */
@@ -302,9 +306,9 @@ a.article, a.article:hover {
         margin-left: 0;
     }
     /* content full width sidebar static */
-    #content{
+    #content {
         /* width: 100%;         */
-        padding-left:20px;
+        padding-left: 20px;
     }
     #sidebarCollapse span {
         display: none;
@@ -357,20 +361,21 @@ a.article, a.article:hover {
 
 /* Hidding arrow from input type="numer" */
 
-input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;
     margin: 0;
     /* <-- Apparently some margin are still there even though it's hidden */
 }
 
-input[type=number] {
+input[type="number"] {
     -moz-appearance: textfield;
     /* Firefox */
 }
 
 /* Cambios 29/10/2019 */
-.inputContainer{
+.inputContainer {
     margin-bottom: 3px;
 }
 .inputContainer > * {
@@ -378,13 +383,99 @@ input[type=number] {
     vertical-align: middle;
     margin: 0px 7px;
 }
-.inputContainer input{
+.inputContainer input {
     width: 15px;
     height: 15px;
     margin-bottom: 0;
 }
 
-.username{
-    font-weight:bold;
-    color:#fff;
+.username {
+    font-weight: bold;
+    color: #fff;
 }
+
+.alerta-icon {
+    margin-left: 20px;
+}
+.bg-primary {
+    background: #134ea1 !important;
+}
+
+/* notificaciones */
+
+.badge-notification {
+    position: relative;
+    margin-right: 10px;
+}
+.badge-notification[data-badge]::after {
+    content: attr(data-badge);
+    position: absolute;
+    top: -11px;
+    right: -10px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 50%;
+    background: var(--secondary);
+    color: #fff;
+}
+span.badge-notification {
+    margin-right: 24px;
+}
+span.badge-notification[data-badge]::after {
+    top: -11px;
+    right: -24px;
+}
+
+/* table reflow */
+.dropdown-menu {
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.notificaciones-menu {
+    /* background: green; */
+    /* max-height: 30px; */
+    font-size: 12px;
+    padding: 5px;
+    min-height: 30px;
+    margin-top: -9px;
+    border-bottom: 1px solid #D6D5D4;    
+}
+.notificaciones-contenido > span{
+    /* background: green; */
+    font-size: 12px;
+}
+.notificationes-button-more{
+    font-size: 10px;
+}
+
+
+/* Large devices (desktops, 992px and up) */
+/* @media (min-width: 200px){
+    .notificaciones-dropdown-menu {
+        width: auto !important;
+    }
+} */
+@media (max-width: 575.98px) {
+    .notificaciones-dropdown-menu {
+        width: 260px !important;
+    }
+ }
+
+@media (min-width: 576px) {
+    .notificaciones-dropdown-menu {
+        width: 400px !important;        
+}
+
+
+/* 
+.notificaciones-dropdown-menu {
+    width: 400px !important;
+    opacity: 0.9;
+} */

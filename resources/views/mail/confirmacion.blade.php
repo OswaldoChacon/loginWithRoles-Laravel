@@ -5,32 +5,90 @@
     <meta charset="utf-8">
 </head>
 
-<body style="background: red ">
-    <table width="100%" height="100%">
+<body style="margin: 0; padding: 0;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
         <tr>
-            <td style="background-color: #ecf0f1">
-                <div style="width: 100%;margin:20px 0; display: inline-block;text-align: center">
-                    <img style="padding: 0; width: 200px; margin: 5px" src="https://s19.postimg.org/np3e1b7pv/premier.jpg">
-                    <img style="padding: 0; width: 200px; margin: 5px" src="https://s19.postimg.org/ejzml6toz/banner_hoenn.png">
-                </div>
-                <div style="color: #34495e; margin: 4% 10% 2%; text-align: justify;font-family: sans-serif">
-                    <h2 style="color: #e67e22; margin: 0 0 7px">¡Hola!</h2>
-                    <p style="margin: 2px; font-size: 15px">
-                        Somos la comunidad Poketrainers Trujillo, una comunidad de Pokémon VGC que se encuentra en la ciudad de Trujillo Perú.<br>
-                        Estando próxima la salida de Pokémon Sol y Luna en la comunidad estamos realizando una serie de actividades que nos preparara para su llegada, así que los invitamos a formar parte de la comunidad y a acompañarnos en esta nueva aventura en la región de Alola, donde muchos pokemon y aventuras nos esperan!<br>
-                        Entre las actividades tenemos:</p>
-                    <ul style="font-size: 15px;  margin: 10px 0">
-                        <li>Batallas amistosas.</li>
-                        <li>Torneos Oficiales.</li>
-                        <li>Intercambios de Pokémon.</li>
-                        <li>Actividades de integración.</li>
-                        <li>Muchas sorpresas más.</li>
-                    </ul>
-                    <div style="width: 100%; text-align: center">
-                        
-                    </div>
-                    <p style="color: #b3b3b3; font-size: 12px; text-align: center;margin: 30px 0 0">Poketrainers Trujillo 2016</p>
-                </div>
+            <td style="padding: 10px 0 30px 0;">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="600"
+                    style="border: 1px solid #cccccc; border-collapse: collapse;">
+                    <tr>
+                        <td align="center" bgcolor="#ffffff"
+                            style="padding: 40px 30px 30px 30px; color: #ffff; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;"
+                                        width="50%">
+                                        <img src="{{asset('/img/tecnm.png')}}" style="width: 100%">
+                                    </td>
+                                    <td align="right" width="50%">
+                                        <img src="{{asset('/img/logo.png')}}" style="width: 60%">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
+                                        <b>La jefatura de proyectos de investigación, te da la bienvenida a:</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tempus adipiscing
+                                        felis, sit amet blandit ipsum volutpat sed. Morbi porttitor, eget accumsan
+                                        dictum, nisi libero ultricies ipsum, in posuere mauris neque at erat.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <a style="text-decoration: none; border-radius: 5px; padding: 11px 23px; color: white; background-color: #134EA1"
+                                            href="{{ url('/registro/verificacion/'.$datos_formulario['cod_confirmacion'])}}">Verificar
+                                            correo</a>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#134EA1" style="padding: 30px 30px 30px 30px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;"
+                                        width="75%">
+                                        TecNM campus Tuxtla Gutiérrez<br />
+                                        Ingeniería en Sistemas Computacionales
+                                    </td>
+                                    <td align="right" width="25%">
+                                        <table border="0" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td
+                                                    style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
+                                                    <a href="http://www.twitter.com/" style="color: #ffffff;">
+                                                        <img src="images/tw.gif" alt="Twitter" width="38" height="38"
+                                                            style="display: block;" border="0" />
+                                                    </a>
+                                                </td>
+                                                <td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
+                                                <td
+                                                    style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
+                                                    <a href="http://www.twitter.com/" style="color: #ffffff;">
+                                                        <img src="images/fb.gif" alt="Facebook" width="38" height="38"
+                                                            style="display: block;" border="0" />
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>

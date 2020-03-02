@@ -8,7 +8,7 @@ class Proyectos extends Model
 {
     //
     protected $fillable = [
-        'titulo', 'empresa', 'objetivo', 'lineadeinvestigacion_id', 'asesor'
+        'titulo', 'empresa', 'objetivo', 'lineadeinvestigacion_id', 'tipos_proyectos_id', 'asesor'
     ];
     public function user()
     {
@@ -17,6 +17,10 @@ class Proyectos extends Model
     public function lineadeinvestigacion()
     {
         return $this->belongsTo('App\LineasDeInvestigacion');
+    }
+    public function tipos_proyectos()
+    {
+        return $this->belongsTo('App\TiposProyectos');
     }
     public function foro()
     {
@@ -32,5 +36,16 @@ class Proyectos extends Model
         if($foro->acceso == true)
             return true;
         return false;
+    }
+
+    public function folio(Foros $foro)
+    {
+        $folio = $foro->prefijo;
+        $concat_folio = $foro->proyectos()->count() +1;
+        if ($concat_folio < 10)
+            $folio .= "0";
+        // $folio .= $concat_folio + 1;
+        $folio .= $concat_folio;
+        return $folio;
     }
 }

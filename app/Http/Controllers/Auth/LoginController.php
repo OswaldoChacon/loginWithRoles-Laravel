@@ -53,7 +53,8 @@ class LoginController extends Controller
             'password' => 'required|string',            
         ]);
         // if (Auth::attempt($credentials)) {                    
-        $user = User::where('email', $request->input('email'))->first();
+        $user = User::where('num_control', $request->input('num_control'))->first();
+        
         // if (!$user->hasRole($request->input('role'))) {            
         //     return back()
         //         ->withErrors([$this->username() => 'No cuentas con el permiso para ingresar como '.$request->role])
@@ -89,7 +90,7 @@ class LoginController extends Controller
     protected function getCredentials(Request $request)
     {
         return [
-            'email' => $request->input('email'),
+            'num_control' => $request->input('num_control'),
             'password' => $request->input('password'),
             'confirmado' => true
         ];
@@ -108,6 +109,6 @@ class LoginController extends Controller
 
     public function username()
     {
-        return 'email';
+        return 'num_control';
     }
 }

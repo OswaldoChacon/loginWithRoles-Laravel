@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Proyectos;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Registro extends FormRequest
+class ProyectoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,13 +21,17 @@ class Registro extends FormRequest
      *
      * @return array
      */
-  
     public function rules()
     {
         return [
-            'num_control'=>'required|numeric|unique:users',            
-            'email'=> 'required|email|unique:users',          
-            'rol'=> 'required'
+            //
+            'titulo'=>'required|unique:proyectos',
+            'objetivo'=>'required',
+            'empresa'=>'required',
+            'lineadeinvestigacion_id'=>'required',
+            'tipos_proyectos_id'=>'required',
+            'asesor'=>'required',
+            
         ];
     }
 }

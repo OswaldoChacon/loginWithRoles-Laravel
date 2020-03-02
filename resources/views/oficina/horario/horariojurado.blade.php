@@ -4,7 +4,7 @@
     <h5 class="card-header">Horario del jurado</h5>
     <div class="card-body">        
         @if (is_null($foro))
-            <div class="alert alert-info">No existe un foro activo</div>
+            <div class="alert alert-danger">No existe ningún foro activo</div>
         @elseif($foro->fechas()->count() == 0)
             <div class="alert alert-info">No se han definido las fechas para el foro actual </div>
 
@@ -91,56 +91,7 @@
 
 @push('scripts')
 <script>
-    $('.checkHorarioJurado').change(function(){
-    var valueCheckebox = $(this).prop('checked') == true ? 1 : 0;
-    $(".loaderContainer").addClass('active');
-    var idDocente = $(this).attr('id');
-    var idFechaForo = $(this).attr('fecha-foro');
-    var hora = $(this).parent().find('small').text();
-    var posicion = $(this).val(); 
-    var url;
-    if(valueCheckebox == 1)
-        url = 'horariojurado';
-    else
-        url = 'eliminarhorariojurado';
-    $.ajax({
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    },
-        type: "POST",
-        url: url,
-        data: {
-            idDocente: idDocente, 
-            idFechaForo: idFechaForo, 
-            hora:hora,             
-            posicion: posicion
-        },
-        success: function(response){            
-            console.log(response);
-            $(".loaderContainer").removeClass('active');
-            // $(".messageContainer").addClass('active');
-            // $(".messageContainer .message .icon").html('');
-            // $(".messageContainer .message .icon").append('<i class="fas fa-envelope"></i>');
-            // $(".messageContainer .message .title p").text('¡Registro Actualizado!');
-            // $(".messageContainer .message .description p").text('Su registro ha sido actualizado correctamente');
-            setTimeout(() => {
-                $(".messageContainer").removeClass('active');
-            }, 500);
-
-        },
-        error: function(){
-            $(".loaderContainer").removeClass('active');
-                $(".messageContainer").addClass('active');
-                $(".messageContainer .message .icon").html('');
-                $(".messageContainer .message .icon").append('<i class="fas fa-envelope"></i>');
-                $(".messageContainer .message .title p").text('¡Error!');
-                $(".messageContainer .message .description p").text('Ocurrió un error al completar la petición.');
-                setTimeout(() => {
-                    $(".messageContainer").removeClass('active');
-                }, 3000);
-        }
-    });
-})
-
+   
 </script>
 
 @endpush

@@ -17,13 +17,15 @@
                 <thead>
                     <th>Numero </th>
                     <th>Titulo</th>
+                    <th>Periodo</th>
                     <th>Acciones</th>
                 </thead>
                 <tbody>
                     @foreach ($foros as $foro)
-                    <tr style="background-color: {{$foro->acceso == 1 ? '#00b963' : '#e8e8e8'}}">
+                    <tr style="background-color: {{$foro->acceso == 1 ? '#00b963' : ''}}; color: {{$foro->acceso == 1 ? '#ffff' : ''}}">
                         <td>{{$foro->no_foro}}</td>
-                        <td>{{$foro->nombre}}</td>
+                        <td>{{$foro->nombre}} </td>
+                        <td>{{$foro->periodo}} {{$foro->anio}}</td>
                         <td>
                             <div class="btn-group" role="group">
                                 <?php

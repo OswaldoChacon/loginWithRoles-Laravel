@@ -8,12 +8,36 @@ Route::group(['middleware' => 'admin'], function () {
         return view('home.oficina');
     })->name('Oficina');
 
+    //usuarios
+    Route::get('Oficina/alumnos',function(){
+        $url = 'Alumnos';
+        $usuarios = App\Roles::where('nombre','Alumno')->first()->users()->paginate(20);
+        return view('oficina.usuarios.users',compact('url','usuarios'));
+    })->name('alumnosView');
 
+    Route::get('Oficina/docentes',function(){
+        $url = 'Docentes';
+        $usuarios = App\Roles::where('nombre','Docente')->first()->users()->paginate(20);        
+        return view('oficina.usuarios.users',compact('url','usuarios'));
+    })->name('docentesView');
+
+    Route::get('Oficina/getUsuario/{usuario}','OficinaController@getUsuario');
+    Route::put('Oficina/actualizarUsuario/{usuario}','OficinaController@actualizarUsuario');
+
+    Route::get('Oficina/eliminarusuario/{usuario}','OficinaController@eliminarusuario')->name('eliminarusuario');
     //lineas de investigacion
     Route::get('Oficina/lineasdeinvestigacion', 'OficinaController@lineasdeinvestigacion')->name('lineas');
+    Route::get('Oficina/getlineadeinvestigacion/{linea}','OficinaController@getlineadeinvestigacion');
     Route::post('Oficina/lineadeinvestigacionguardar', 'OficinaController@lineadeinvestigacionguardar')->name('lineasdeinvestigacionguardar');
     Route::delete('Oficina/lineadeinvestigacioneliminar/{linea}', 'OficinaController@lineadeinvestigacioneliminar')->name('lineadeinvestigacioneliminar');
     Route::put('Oficina/lineadeinvestigacionactualizar/{linea}', 'OficinaController@lineadeinvestigacionactualizar')->name('lineadeinvestigacionactualizar');
+
+
+    Route::get('Oficina/tipos_proyectos', 'OficinaController@tipos_proyectos')->name('tipos_proyectos');
+    Route::post('Oficina/registrar_tipos_proyectos','OficinaController@registrar_tipos_proyectos')->name('registrar_tipos_proyectos');
+    Route::delete('Oficina/eliminar_tipos_proyectos/{tipo}','OficinaController@eliminar_tipos_proyectos')->name('eliminar_tipos_proyectos');
+    Route::get('Oficina/get_tipos_proyectos/{tipo}','OficinaController@get_tipos_proyectos')->name('get_tipos_proyectos');
+    Route::put('Oficina/actualizar_tipos_proyectos/{tipo}','OficinaController@actualizar_tipos_proyectos')->name('actualizar_tipos_proyectos');
 
     //foros
     Route::get('Oficina/foros', 'OficinaController@foros')->name('foros');
@@ -38,10 +62,10 @@ Route::group(['middleware' => 'admin'], function () {
 
     //registrar_usuario
     Route::get('Oficina/registrar', function () {
-        $roles = App\Roles::all();
-        return view('registrar', compact('roles'));
+        $roles = App\Roles::orderBy('nombre')->get();
+        return view('oficina.usuarios.registrar', compact('roles'));
     })->name('registrarView');
-    Route::post('Oficina/registrar', 'UsersController@create')->name('registrar');
+    Route::post('Oficina/registrar', 'OficinaController@create')->name('registrarOficina');
 
     //jurado uno de ellos no funciona, creo que es el segundo tampoco este que era la vcista
     Route::get('Oficina/proyectos_jurado', function () {
@@ -85,7 +109,7 @@ Route::group(['middleware' => 'admin'], function () {
 
 
     Route::post('Oficina/generarHorarioAnt','OficinaController@generarhorario')->name('generarhorario');
-
-    Route::view('Oficina/fechasForo','oficina.foros.fechas',
-    ['foro'=> App\Foros::where('acceso',true)->first()]);
+    Route::get('Oficina/proyectosJurado', 'OficinaController@proyectosHorarioMaestros');
+   
 });
+

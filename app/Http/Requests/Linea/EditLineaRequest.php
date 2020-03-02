@@ -1,17 +1,19 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Linea;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Crypt;
 
+
 class EditLineaRequest extends FormRequest
 {
-    protected $route;    
+    protected $route;
     public function __construct(Route $route)
     {
-        $this->route = $route;                       
+        $this->route = $route;
+       
     }
     /**
      * Determine if the user is authorized to make this request.
@@ -29,12 +31,12 @@ class EditLineaRequest extends FormRequest
      * @return array
      */
     public function rules()
-    {                
+    {        
         return [
             'clave' => 'required|unique:lineasdeinvestigacion,clave,'.Crypt::decrypt($this->route->parameter('linea')),
-            'nombre' => 'required|unique:lineasdeinvestigacion,nombre,'.Crypt::decrypt($this->route->parameter('linea'))
+            'nombre' => 'required|unique:lineasdeinvestigacion,nombre,' .Crypt::decrypt($this->route->parameter('linea'))
             //
-        ];        
+        ];
     }
     public function messages()
     {

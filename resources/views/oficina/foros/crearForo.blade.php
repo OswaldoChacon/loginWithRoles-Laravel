@@ -24,7 +24,7 @@
                 </div>
                 <div class="form-group col-md-10">
                     <label for="name">Titulo</label>
-                    <input class="form-control" type="text" name="nombre" value="FORO DE PROPUESTAS DE PROYECTOS PARA TITULACIÓN INTEGRAL">
+                    <input class="form-control uppercase" type="text" name="nombre" value="FORO DE PROPUESTAS DE PROYECTOS PARA TITULACIÓN INTEGRAL">
                     <!-- {!! $errors->first('titulo','<span class="help-block alert alert-danger">:message</span>')!!} -->
                     @if ($errors->has('nombre'))
                     <span class="text-danger">{{ $errors->first('nombre') }}</span>
@@ -35,8 +35,8 @@
                 <div class="form-group col-md-6">
                     <select class="form-control" name="periodo">
                         <option disabled selected>Perido</option>
-                        <option value="Enero-Junio">Enero-Junio</option>
-                        <option value="Agosto-Diciembre">Agosto-Diciembre</option>                        
+                        <option value="Enero-Junio">Enero - Junio</option>
+                        <option value="Agosto-Diciembre">Agosto - Diciembre</option>                        
                     </select>
                     <!-- {!! $errors->first('periodo','<span class="help-block alert alert-danger">:message</span>')!!} -->
                     @if ($errors->has('periodo'))

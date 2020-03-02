@@ -3,7 +3,7 @@
     color:#fff;
 }
 .close:hover{
-    color: #fff !important;
+    /* color: #fff !important; */
 }
 .alert-success{
     background: #4CAF50 !important;

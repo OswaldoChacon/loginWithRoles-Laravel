@@ -22,27 +22,23 @@ class Problema
         foreach ($maestros_et as $jurado) {
             $this->maestros[] = new Maestros($jurado->nombre, $jurado->horas);
         }
-        //dd(json_decode(($this->maestros[0])));
-        foreach ($eventosConMaestros as $evento) {
-            // unset($aux_maestro);            
+        foreach ($eventosConMaestros as $evento) {         
             $aux_maestro = array();
-            foreach ($this->maestros as $maestro) {
-                //dd($evento,$maestro);
+            foreach ($this->maestros as $maestro) {                
                 if (in_array($maestro->nombre, $evento->maestros))
                     $aux_maestro[] = $maestro;
-            }
-            //dd($aux_maestro);
+                    // dd($evento,$this->maestros);
+            }        
             //dd($evento);
-            $this->eventos[] = new Eventos($evento->id_proyecto, $evento->titulo, $aux_maestro);
-        }
-
+            $this->eventos[] = new Eventos($evento->id_proyecto, $evento->titulo, $aux_maestro);           
+        }        
         // dd($this->eventos);
         foreach ($this->eventos as $evento) {
-            $evento->setPosibleEspaciosT($this->getEspaciosEnComun($evento));
-            // dd($evento->espaciosComun);
-            // if($evento->espaciosComun !=null)
+            $evento->setPosibleEspaciosT($this->getEspaciosEnComun($evento));            
+            if($evento->espaciosComun !=null)
             $evento->setSizeComun(sizeof($evento->espaciosComun));
         }
+        // dd($this->eventos);
         // dd($espaciosDeTiempo);
         // foreach ($espaciosDeTiempo as $timeslots) {
         for ($i = 0; $i < sizeof($espaciosDeTiempo); $i++) {
@@ -68,15 +64,17 @@ class Problema
         $test = array();
         // unset($this->aux_timeslot_common);
 
-
+        // dd($evento->maestroList);
         foreach ($evento->maestroList as $maestros) {
             $test[] = $maestros->horario;
         }
-        //  dd($evento);
-        // if ($test != null || sizeof($test)>1) {
+        // dd($test);
+        //   dd($evento);
+        
+        if (sizeof($test)>1 ) {
             $result = call_user_func_array('array_intersect', $test);
             $result = array_values($result);
-        // }
+        }
        
         // dd($result);
         // return $aux_timeslot_common;

@@ -3,15 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use App\Http\Requests\Registro;
 use App\Roles;
 use App\User;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Session;
-use App\Mail\Confirmacion;
 use App\Notificaciones;
 use App\Proyectos;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 
 class UsersController extends Controller
@@ -19,36 +15,20 @@ class UsersController extends Controller
     //
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth');               
     }
-    protected function create(Registro $request)
+    public function notificacionesView()
     {
-        $cod_confirmacion = Str::random(25);
-        $datos_formulario = [
-            'nombre' => $request->nombre,
-            'email' => $request->email,
-            'cod_confirmacion' => $cod_confirmacion,
-        ];
-        $rol = Roles::where('nombre', $request->rol)->get();
-        $nuevoUsuario = new User();
-        $nuevoUsuario->num_control = $request->num_control;
-        $nuevoUsuario->email = $request->email;
-        $nuevoUsuario->password = bcrypt($request->num_control);
-        $nuevoUsuario->cod_confirmacion = $cod_confirmacion;
-        $nuevoUsuario->save();
-        $nuevoUsuario->roles()->attach($rol);
-        Mail::to($request->email)->send(new Confirmacion($datos_formulario));
-        Session::flash('message', '¡Registrado!');
-        Session::flash('alert-success', 'alert-success');
-        return back();
-        // ->with('success','Registro exitoso');
-        // return User::create([
-        //     'nombre' => $data['nombre'],
-        //     'email' => $data['email'],
-        //     'password' => Hash::make($data['password']),
-        // ]);
-    }
+        $notificaciones = Notificaciones::whereHas('proyecto.foro', function ($query) {
+                $query->where('acceso', 1);
+        })->where('receptor', Auth::user()->id)->whereNULL('respuesta')->get();
 
+        $notificacionesRespondidas = Notificaciones::whereHas('proyecto.foro',function($query){
+            $query->where('acceso',1);
+        })->where('receptor',Auth::user()->id)->whereNotNull('respuesta')->get();
+
+        return view('notificaciones',compact('notificaciones','notificacionesRespondidas'));
+    }
     public function notificaciones(Request $request, $id)
     {
         $notificacion = Notificaciones::find(Crypt::decrypt($id));
@@ -59,6 +39,7 @@ class UsersController extends Controller
         $notificaciones_pendientes = Notificaciones::where('proyecto_id', $notificacion->proyecto_id)->where('respuesta', 0)->orWhere('respuesta', null)->count();
         $proyecto = new Proyectos();
         $proyecto = $notificacion->proyecto()->first();
+
         if ($notificaciones_pendientes == 0) {
             $proyecto->aceptado = true;
         } else {
@@ -75,12 +56,17 @@ class UsersController extends Controller
         $asesor = Roles::where('nombre', 'Docente')->first()->users()->where('users.id', $notificacion->receptor)->first();
         $proyecto = $notificacion->proyecto()->first();
         if (!is_null($asesor)) {
-            if ($notificacion->respuesta == 1)
+            if ($notificacion->respuesta == 1){
+                $asesor->jurado_proyecto()->attach($proyecto); 
                 $proyecto->asesor = $asesor->id;
-            else
+            }             
+            else{
                 $proyecto->asesor = null;
+                $asesor->jurado_proyecto()->detach($proyecto); 
+            }             
         }
         $proyecto->save();
+        
         return;
     }
     public function aceptarAlumno(Notificaciones $notificacion)
@@ -94,5 +80,26 @@ class UsersController extends Controller
                 $alumno->proyectos()->detach($proyecto);
         }
         return;
+    }
+
+    public function actualizar_info(Request $request)
+    {
+        $user = User::find(Crypt::decrypt($request->id));
+        //dd(json_decode($user));
+        // Crypt::decrypt($request->id)
+        $user->fill($request->all());
+        $this->authorize($user);
+        $user->save();
+        return response()->json(Auth::user());
+    }
+    public function actualizar_password(Request $request, $id)
+    {
+        $rules = [
+            'password'=>'required|min:6'
+        ];
+        $request->validate($rules);
+        $user = User::find(Crypt::decrypt($id));
+        $user->password = bcrypt($request->password);
+        $user->save();
     }
 }

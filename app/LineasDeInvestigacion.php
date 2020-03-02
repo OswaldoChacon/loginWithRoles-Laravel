@@ -11,10 +11,10 @@ class LineasDeInvestigacion extends Model
     protected $fillable = [
         'clave','nombre'
     ];
-    protected $hidden =['id'];    
+    protected $hidden =[];    
 
-    public function proyecto()
+    public function proyectos()
     {
-        return $this->hasOne('App\Proyectos');
+        return $this->hasMany('App\Proyectos','lineadeinvestigacion_id');
     }
 }

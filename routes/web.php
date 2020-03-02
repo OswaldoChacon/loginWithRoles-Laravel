@@ -10,10 +10,17 @@ Route::get('/', function () {
 Route::group(['middleware'=>'auth'],function(){
     Route::put('responseNotification/{id}','UsersController@notificaciones')->name('notificacionesResponse');
 
+
+    Route::put('actualizar-password/{usuario}','UsersController@actualizar_password');
     //mi perfil
-    Route::get('perfil',function(){
-        return view ('miPerfil');
-    })->name('miPerfil');
+    
+
+    Route::get('notificaciones', function () {
+        return view('notificaciones');
+    })->name('notificaciones');
+
+
+    //Route::put('actualizar-info','UsersController@actualizar_info');
 });
 
 Route::get('/registro/verificacion/{cod_confirmacion}', 'Auth\RegisterController@verificacion')->name('verificacion');
@@ -24,9 +31,6 @@ Route::get('/login', 'Auth\LoginController@showLoginForm')->name('loginView')->m
 
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
-Route::get('/registrar', function () {
-    return view('login.registrar');
-})->name('register');
 
 
 

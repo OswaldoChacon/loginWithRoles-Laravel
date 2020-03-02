@@ -6,6 +6,9 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Crypt;
+
 class User extends Authenticatable
 {
     use Notifiable;
@@ -16,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nombre', 'email', 'password', 'cod_confirmacion'
+        'nombre', 'num_control', 'prefijo','apellidoP', 'apellidoM', 'email', 'password'
     ];
 
     /**
@@ -25,7 +28,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'id', 'password', 'remember_token',
     ];
 
     /**
@@ -49,6 +52,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Foros');
     }
+    public function asesor()
+    {
+        return $this->hasMany('App\Proyectos','asesor');
+    }
     public function proyectos()
     {
         return $this->belongsToMany('App\Proyectos');
@@ -56,18 +63,18 @@ class User extends Authenticatable
     public function notificaciones_emisor()
     {
         return $this->hasMany('App\Notificaciones', 'emisor');
-    }   
+    }
     public function notificaciones_receptor()
     {
         return $this->hasMany('App\Notificaciones', 'receptor');
     }
     public function jurado_proyecto()
     {
-        return $this->belongsToMany('App\Proyectos','jurados','docente_id','proyecto_id');
+        return $this->belongsToMany('App\Proyectos', 'jurados', 'docente_id', 'proyecto_id');
     }
     public function horarios()
     {
-        return $this->hasMany('App\HorarioJurado','docente_id');
+        return $this->hasMany('App\HorarioJurado', 'docente_id');
     }
 
     public function getId()
@@ -76,7 +83,7 @@ class User extends Authenticatable
     }
     public function getFullName()
     {
-        return "{$this->prefijo} {$this->nombre} {$this->apellidoP} {$this->apellidoM}";
+        return strtoupper("{$this->prefijo} {$this->nombre} {$this->apellidoP} {$this->apellidoM}");
     }
     public function authorizeRoles($roles)
     {
@@ -107,4 +114,18 @@ class User extends Authenticatable
         }
         return false;
     }
+    public function hasProject($user_id)
+    {
+        if (User::whereHas('proyectos.foro', function (Builder $query) {
+            $query->where('promedio', '>', 69)->where('acceso', false);
+        })->orWhereHas('proyectos.foro', function (Builder $query) {
+            $query->where('acceso', true);
+        })->whereHas('roles', function (Builder $query) {
+            $query->where('roles.nombre', 'Alumno');
+        })->where('id', $user_id)->count() > 0)
+            return false;
+        return true;
+    }
+
+  
 }

@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Tipos;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Carbon\Carbon;
 
-class HorarioRequest extends FormRequest
+class RegistrarTiposRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +25,8 @@ class HorarioRequest extends FormRequest
     {
         return [
             //
-            'fecha'     => 'required|unique:fechas_foros,fecha|date|after_or_equal:' . Carbon::now()->toDateString(), '|unique',
-            'hora_inicio'  => 'required|date_format:H:i',
-            'hora_termino'   => 'required|date_format:H:i|after:hora_inicio'
+            'clave' => 'required|unique:tipos_de_proyectos',
+            'nombre' => 'required|unique:tipos_de_proyectos'
         ];
     }
 }

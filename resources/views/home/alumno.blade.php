@@ -4,7 +4,7 @@
     <li>
         <a href="{{route('homeAlumno')}}"> Inicio</a>
     </li>
-    <li>
+    {{-- <li>
         <a href="{{route('notificacionesAlumno')}}">
             <div class="row">
 
@@ -19,7 +19,7 @@
                 </div>
             </div>
         </a>
-    </li>
+    </li> --}}
     <li>
         <a href="{{route('registrarProyectoView')}}">Registrar Proyecto</a>
     </li>

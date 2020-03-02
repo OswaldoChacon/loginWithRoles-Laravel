@@ -18,7 +18,7 @@
             <input type="hidden" name="beta" class="form-control" value="2">
             <input type="hidden" name="Q" class="form-control" value="1">
             <input type="hidden" name="evaporation" class="form-control" value="0.1">
-            <input type="hidden" name="t_minDenominador" class="form-control" id="test" value="1">
+            <input type="hidden" name="t_minDenominador" class="form-control" id="test" value="10">
             <div class="form-group col-md-4 col-xl-3">
                 <label for="iterations">Número de iteraciones</label>
                 <input type="number" name="iterations" class="form-control" value="400">
@@ -49,9 +49,9 @@
                         <?php
                             echo ('<th>Fecha</th>');
                             echo ('<th>Hora</th>');
-                            echo ('<th class="not-export">Violaciones</th>');
+                            echo ('<th class="not-export">Viol. RS</th>');
                             for ($z = 0; $z < $foro->num_aulas; $z++) {
-                                echo ('<th>Folio</th>');
+                                echo ('<th>Id Proy.</th>');
                                 for ($y = 0; $y < $foro->num_maestros; $y++) {
                                     echo ('<th>Maestro</th>');
                                 }
@@ -213,10 +213,8 @@
                 table.rows.add($(tableHour)).draw();
             },
             error: function(error) {
-                $(".loaderContainer").removeClass('active');
-                console.log(error);
-                var er = error.responseJSON.errors;                
-                console.log(er);
+                $(".loaderContainer").removeClass('active');             
+                var er = error.responseJSON.errors;                                
                 $.each(er, function(name, message) {
                     $('input[name=' + name + ']').after('<span class="text-danger">' + message + '</span>');
                 });

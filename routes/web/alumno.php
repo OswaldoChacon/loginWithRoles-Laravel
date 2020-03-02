@@ -5,8 +5,9 @@ Route::group(['prefix' => 'Alumno', 'middleware' => 'alumno'], function () {
         return redirect()->route('homeAlumno');
         // return view('home.alumno');
     })->name('Alumno');
+
     Route::get('home', function () {
-        return view('alumno.index');
+        return view('home');
     })->name('homeAlumno');
 
     //proyecto
@@ -14,12 +15,9 @@ Route::group(['prefix' => 'Alumno', 'middleware' => 'alumno'], function () {
     Route::post('registrarProyecto/{id}', 'AlumnoController@registrarProyecto')->name('registrarProyecto');
     Route::get('misproyectos', 'AlumnoController@misProyectos')->name('misProyectos');
 
-    Route::get('perfil', function () {
-        return view('miPerfil');
-    })->name('miPerfilAlumno');
 
     //notificaciones
-    Route::get('notificaciones', function () {
-        return view('notificaciones');
-    })->name('notificacionesAlumno');
+    Route::get('notificaciones','UsersController@notificacionesView')->name('notificacionesAlumno');
+
+    Route::put('actualizar-info/{usuario}','AlumnoController@actualizar_info');
 });

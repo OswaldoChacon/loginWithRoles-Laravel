@@ -11,15 +11,18 @@
                 <a href="{{route('registrarView')}}">Registrar usuario</a>
             </li>
             <li>
-                <a href="">Alumnos</a>
+            <a href="{{route('alumnosView')}}">Alumnos</a>
             </li>
             <li>
-                <a href="">Docentes</a>
+            <a href="{{route('docentesView')}}">Docentes</a>
             </li>
         </ul>
     </li>    
     <li>
         <a href="{{route('lineas')}}">Linea de investigación</a>
+    </li>
+    <li>
+        <a href="{{route('tipos_proyectos')}}">Tipos de proyectos</a>
     </li>
     <li class="active">
         <a href="#foros" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Foros</a>
