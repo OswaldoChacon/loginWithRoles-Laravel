@@ -479,37 +479,22 @@ class OficinaController extends Controller
         //$cantidadMaestro_Jurado = DB::select('SELECT jurados.* FROM jurados inner join proyectos on jurados.proyecto_id=proyectos.id INNER join foros on proyectos.foros_id=foros.id where foros.acceso=1 and proyectos.participa=1 group by jurados.docente_id');        
         //$horarioDocentes = DB::select('SELECT horario_jurado.* FROM `horario_jurado` inner join fechas_foros on horario_jurado.fechas_foros_id=horario_jurado.id inner join foros on fechas_foros.foros_id=foros.id inner join jurados on horario_jurado.docente_id=jurados.docente_id inner join proyectos on jurados.proyecto_id=proyectos.id where foros.acceso=1 and proyectos.participa=1 group by docente_id');
 
-        $cantidadMaestro_Jurado = $foro->proyectos()->where('participa', 1)->with('proyecto_jurado')->get()->pluck('proyecto_jurado')->flatten()->unique('num_control');
-        //$test2 = $foro->fechas()->with('horario_jurado')->get()->pluck('horario_jurado')->flatten()->unique('docente_id');
+        $cantidadMaestro_Jurado = $foro->proyectos()->where('participa', 1)->with('proyecto_jurado')->get()->pluck('proyecto_jurado')->flatten()->unique('num_control');        
         $horarioDocentes = $foro->fechas()->with('horario_jurado')->get()->pluck('horario_jurado')->flatten()->unique('docente_id');
-        //$foro->proyectos()->where('participa',1)->with('proyecto_jurado')->get();
-        //dd(json_decode($test2));
+        $horarioDocentes = User::whereHas('jurado_proyecto',function($query){
+            $query->where('participa',1);
+        })->whereHas('roles', function ($query) {
+            $query->where('roles.nombre', 'Docente');
+        })->has('horarios')->get();      
 
-
-        $cantidadDeET = count($intervalosUnion) * $foro->num_aulas;
-        //dd($cantidadMaestro_Jurado,$horarioDocentes,$cantidadDeET,sizeof($proyectos_maestros));
-        // dd($proyectos_maestros,$maestro_et);
-        if (sizeof($horarioDocentes) != sizeof($cantidadMaestro_Jurado) || $cantidadDeET < sizeof($proyectos_maestros)) {
+        $cantidadDeET = count($intervalosUnion) * $foro->num_aulas;      
+        if ( (sizeof($horarioDocentes)) != sizeof($cantidadMaestro_Jurado) || $cantidadDeET < sizeof($proyectos_maestros)) {
             return response()->noContent();
         }
         
         //Nuevo 05 dic
 
         $main = new Main($proyectos_maestros, $maestro_et, $intervalosUnion, $request->alpha, $request->beta, $request->Q, $request->evaporation, $request->iterations, $request->ants, $request->estancado,  $request->t_minDenominador, $foro->num_aulas, $recesos);
-        //validacion ultima
-        // $cantidadProyectosMA = DB::table('jurados')->select(DB::raw('count(id_docente) as cantidad, group_concat(distinct docentes.prefijo," ",docentes.nombre," ",docentes.paterno," ",docentes.materno) as nombre'))
-        //     //DB::raw('group_concat(distinct docentes.prefijo," ",docentes.nombre," ",docentes.paterno," ",docentes.maternos) as nombre')
-        //     ->join('docentes', 'jurados.id_docente', '=', 'docentes.id')
-        //     ->join('proyectos', 'jurados.id_proyecto', '=', 'proyectos.id')
-        //     ->where('proyectos.participa', 1)
-        //     ->groupBy('id_docente')
-        //     ->orderBy('cantidad')->get();
-
-        // $cantidadETMaestros = DB::select('select id_docente, count(hora) as cantidad from horariodocentes,docentes,horarioforos,foros where horariodocentes.id_docente = docentes.id and horariodocentes.id_horarioforos = horarioforos.id and horarioforos.id_foro = foros.id and foros.acceso = 1 group by id_docente order by cantidad asc');
-        // // dd($horarioDocentes,"l",$cantidadMaestro_Jurado);
-        // $maestro__foro = $salones->num_maestros;
-        //return $main->problema->eventos[0];
-
         if ($main->problema->eventos[0]->sizeComun == 0) {
             return response()->noContent();
         }

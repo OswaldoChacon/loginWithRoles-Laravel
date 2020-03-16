@@ -43,7 +43,7 @@
                                 @endphp
                                 @foreach($docentes as $docente)
                                 <div class="form-check col-12 col-sm-6 col-md-6 col-xl-4" style="font-size:15px">
-                                    <input class="checkboxJurado" id-proyecto="{{Crypt::encrypt($proyecto->id)}}" id="jurado-{{$docente->num_control}}" type="checkbox" name="jurado" value="{{Crypt::encrypt($docente->id)}}" {{$jurado->contains($docente->id) == true ? 'checked' : ''}} />
+                                    <input class="checkboxJurado" id-proyecto="{{Crypt::encrypt($proyecto->id)}}" id="jurado-{{$docente->num_control}}-{{$proyecto->folio}}" type="checkbox" name="jurado" value="{{Crypt::encrypt($docente->id)}}" {{$jurado->contains($docente->id) == true ? 'checked' : ''}} />
                                     {{$docente->getFullName()}} 
                                 </div>
                                 <!-- <label for="jurado-{{$docente->id}}"></label> -->

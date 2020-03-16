@@ -151,6 +151,7 @@ $(".checkboxJurado").change(function() {
     var idProyecto = $(this).attr("id-proyecto");
     var idDocente = $(this).val();
     var value = $(this).prop("checked") == true ? 1 : 0;
+    var checkboxChanged = $(this).attr('id');;
     var url;
     if (value == 1) url = "/proyecto/asignar_jurado";
     else url = "/proyecto/eliminar_jurado";
@@ -178,6 +179,7 @@ $(".checkboxJurado").change(function() {
         },
         error: function(error) {
             var er = error.responseJSON;
+            $('#'+checkboxChanged).prop('checked',true);
             $(".loaderContainer").removeClass("active");
             $(".messageContainer").addClass("active");
             $(".messageContainer .message .icon").html("");

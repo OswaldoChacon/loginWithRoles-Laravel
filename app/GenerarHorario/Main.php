@@ -670,17 +670,13 @@ class Main
                 //break;
             } else {
                 $encontrado = false;
-                $timeloslot = $ant->Ai[$j];
-                //System.out.println("no esta asignado en ese espacio de tiempo "+timeloslot );
-            }
-            //}
-            if ($encontrado == false) {
-                // $newValue = $ant->Vi[$timeloslot] + 1;
+                $timeloslot = $ant->Ai[$j];                
+            }            
+            if ($encontrado == false) {                
                 $newValue = $ant->Vi[$timeloslot] + 1;
                 $ant->SetViolaciones($timeloslot, $newValue);
             }
         }
-
         for ($i = 0; $i < sizeof($ant->Vi); $i++) {
             $count += $ant->Vi[$i];
         }
@@ -819,35 +815,23 @@ class Main
         }
     }
     public function CalcularProbabilidades($evento, $ant)
-    {
-        // dd($this->matrizPheromoneT);
-        $this->pheromone = 0.0;
-        //cListUpdate(cList, cListAlready);
+    {        
+        $this->pheromone = 0.0;        
         for ($l = 0; $l < sizeof($this->cList); $l++) {
             // Ni_et.set(l, (1 / (1.0 + ants.get(ant).Vi.get(l))));
             $this->Ni_et[$l] = (1 / (1.0 + $ant->Vi[$l]));
         }
         // evitar receso CalcularProbabilidades
         if ($this->breaks != null) {
-            foreach ($this->breaks as $break) {
-                // dd($this->receso);            
-                $this->Ni_et[$break] = 0.0;
-                // $this->probabilidad[$break->posicion] = 0.0; //.set(l, 0.0);                             
+            foreach ($this->breaks as $break) {                
+                $this->Ni_et[$break] = 0.0;         
             }
-        }
-        // dd($this->Ni_et);
-        //        System.out.println("Valor heuristico: " + Ni_et);
-        //        System.out.println("Violacion : " + Vi_et[ant]);
-        for ($l = 0; $l < sizeof($this->cList); $l++) {
-            // if (!ants.get(ant).cListAlready.get(l)) {
-            if (!$ant->cListAlready[$l]) {
-                // dd($ant->cListAlready[$l]);
-                // dd($this->Ni_et[$l]);
+        }        
+        for ($l = 0; $l < sizeof($this->cList); $l++) {            
+            if (!$ant->cListAlready[$l]) {         
                 $this->pheromone += pow($this->matrizPheromoneT[$evento][$l], $this->alpha) * pow($this->Ni_et[$l], $this->beta);
             }
-        }
-        // dd($this->matrizPheromoneT);
-        // for (int l = 0; l < cList.size(); l++) {
+        }        
         for ($l = 0; $l < sizeof($this->cList); $l++) {
             if ($ant->cListAlready[$l]) {
                 $this->probabilidad[$l] = 0.0; //.set(l, 0.0);                                
@@ -855,13 +839,7 @@ class Main
                 $numerador = pow($this->matrizPheromoneT[$evento][$l], $this->alpha) * pow($this->Ni_et[$l], $this->beta);
                 $this->probabilidad[$l] = $numerador / $this->pheromone; //.set(l, (numerador / pheromone));
             }
-        }
-        // if($evento==21){
-        //     dd($this->Ni_et,$this->matrizPheromoneT,$ant,$this->probabilidad,$this->pheromone);
-        // }
-        // dd($this->probabilidad);        
-        // dd($this->probabilidad);
-        //System.out.println("Probabilidad: " + probabilidad);
+        }      
     }
 
 
